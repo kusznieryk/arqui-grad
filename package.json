@@ -9,7 +9,7 @@
     "lint": "eslint",
     "migrate": "prisma migrate dev",
     "seed": "node scripts/seed-exercises.js",
-    "prepare": "prisma generate"
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@google/generative-ai": "^0.24.1",
@@ -22,8 +22,8 @@
     "prisma": "^6.16.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
-    "uuid": "^13.0.0",
-    "zod": "^4.1.11"
+    "uuid": "^10.0.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
