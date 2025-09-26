@@ -1,0 +1,1450 @@
+---
+id: contar-letras
+practica: 1
+title: Contar letras 'a' en un string
+tags: ["subrutinas","ciclo","comparacion"]
+prompt: |
+  Escribir un programa que declare un string llamado MENSAJE y cuente cuántas veces aparece la letra 'a' minúscula. Guardar el resultado en la variable CANT.
+expected_solution: |
+  ORG 1000H
+MENSAJE  DB  "Hola, Buen Dia"  
+LETRA    DB  "a" 
+CANT     DB  ? 
+ORG 2000H   
+MOV AL, LETRA 
+MOV CH, 0 
+MOV CL, OFFSET LETRA - OFFSET MENSAJE 
+MOV BX, OFFSET MENSAJE 
+SIGO:  MOV AH, [BX] 
+CMP AH, AL 
+JNZ SALTAR 
+INC CH 
+SALTAR:  INC BX 
+DEC CL 
+JNZ SIGO 
+MOV CANT, CH 
+HLT 
+END
+---
+id: mostrar-mensaje
+practica: 1
+title: Mostrar mensaje en pantalla con INT 7
+tags: ["io","int7","pantalla"]
+prompt: |
+  Mostrar el mensaje almacenado en memoria usando la interrupción INT 7.
+expected_solution: |
+  ORG 1000H
+MSJ DB "ARQUITECTURA DE COMPUTADORAS-" 
+    DB  "FACULTAD DE INFORMATICA-" 
+    DB  55H,4EH,4CH,50H 
+FIN DB  ? 
+
+ORG 2000H
+MOV BX, OFFSET MSJ
+MOV AL, OFFSET FIN - OFFSET MSJ
+INT 7
+INT 0
+END
+---
+id: leer-numero
+practica: 1
+title: Leer número por teclado y mostrarlo
+tags: ["io","int6","int7","teclado"]
+prompt: |
+  Solicitar el ingreso de un número de un dígito por teclado y mostrarlo en pantalla.
+expected_solution: |
+  ORG 1000H
+MSJ DB "INGRESE UN NUMERO:" 
+FIN DB ? 
+ORG 1500H
+NUM DB ? 
+
+ORG 2000H
+MOV BX, OFFSET MSJ
+MOV AL, OFFSET FIN - OFFSET MSJ
+INT 7
+MOV BX, OFFSET NUM
+INT 6
+MOV AL, 1
+INT 7
+MOV CL, NUM
+INT 0
+END
+---
+id: mostrar-az
+practica: 1
+title: Mostrar A–Z en pantalla
+tags: ["loop","ascii","int7"]
+prompt: |
+  Escribir un programa que muestre las letras mayúsculas de la A a la Z en pantalla usando un bucle.
+expected_solution: |
+  ORG 1000H
+LETRA  DB  "A" 
+ORG 2000H   
+MOV BX, OFFSET LETRA 
+MOV AL, 1 
+MOSTRAR: INT 7 
+CMP LETRA, 5Ah
+JZ FIN
+INC LETRA
+JMP MOSTRAR
+FIN: HLT
+END
+---
+id: contar-con-subrutina
+practica: 1
+title: Subrutina CONTAR_CAR
+tags: ["subrutina","parametros","registro"]
+prompt: |
+  Implementar la subrutina CONTAR_CAR que recibe dirección de comienzo en BX, longitud en AL y el carácter a contar en AH. Retorna en CL la cantidad de veces que aparece.
+expected_solution: |
+  ORG 3000H
+CONTAR_CAR: MOV CL, 0
+SIGO: MOV CH, [BX]
+CMP CH, AH
+JNZ SALTAR
+INC CL
+SALTAR: INC BX
+DEC AL
+JNZ SIGO
+RET
+
+ORG 2000H
+MOV BX, OFFSET MENSAJE
+MOV AL, OFFSET LETRA - OFFSET MENSAJE
+MOV AH, LETRA
+CALL CONTAR_CAR
+MOV CANT, CL
+HLT
+END
+---
+id: mul-registros
+practica: 1
+title: Multiplicación por valor en registros
+tags: ["mul","parametros","registro"]
+prompt: |
+  Implementar subrutina MUL que recibe A y B por valor en AL y AH respectivamente, y devuelve el resultado en AX.
+expected_solution: |
+  ORG 3000H
+MUL: PUSH CX
+PUSH DX
+CMP AL, 0
+JZ VOLVER
+CMP AH, 0    
+JZ VOLVER
+MOV CH, 0
+MOV CL, AL
+MOV DX, 0    
+LOOP: ADD DX, CX
+DEC AH
+JNZ LOOP
+VOLVER: MOV AX, DX
+POP DX
+POP CX    
+RET
+
+ORG 2000H
+MOV AL, A
+MOV AH, B
+CALL MUL
+MOV RES, AX
+HLT
+END
+---
+id: acceso-contra
+practica: 1
+title: Acceso con contraseña
+tags: ["integrador","subrutinas","comparacion","loop"]
+prompt: |
+  Solicitar contraseña de 4 caracteres, compararla con clave predefinida. Mostrar "Acceso permitido" o "Acceso denegado" según corresponda. Bloquear en 5to intento fallido.
+expected_solution: |
+  ORG 1000H
+INGRESO  DB "Ingrese clave:"  
+ACC_OK  DB "Acceso permitido" 
+ACC_FAIL  DB "Acceso denegado" 
+ACC_OUT  DB "Acceso BLOQUEADO" 
+ERRORES  DB 0 
+CLAVE  DB "pass" 
+CLAVEING  DB ? 
+ORG 2000H
+; ... (loop con INT 6, comparación, mensajes según resultado) ...
+HLT
+END
+---
+id: pio-patron-11000011
+practica: 2
+title: PIO - Patrón de luces fijo 11000011
+tags: ["pio","luces","cb","pb","inout","estado"]
+prompt: |
+  Encender las luces con el patrón 11000011 (0xC3) usando el PIO. Las luces están conectadas al puerto PB y el registro CB configura PB como salida.
+expected_solution: |
+  CB EQU 33h
+  PB EQU 31h
+
+  ORG 1000h
+  patron DB 0C3h
+
+  ORG 2000h
+      MOV AL, 0
+      OUT CB, AL
+      MOV AL, patron
+      OUT PB, AL
+      INT 0
+  END
+---
+id: pio-verificar-llave-msb
+practica: 2
+title: PIO - Verificar llave más significativa
+tags: ["pio","llaves","pa","ca","pantalla","condicional"]
+prompt: |
+  Verificar si la llave más a la izquierda (bit 7) está prendida. Si está prendida, mostrar "Llave prendida"; si no, "Llave apagada".
+expected_solution: |
+  CA EQU 32h
+  PA EQU 30h
+
+  ORG 1000h
+  prendida DB "Llave prendida"
+  apagada  DB "Llave apagada"
+  fin_apagada DB ?
+
+  ORG 2000h
+      MOV AL, 0FFh
+      OUT CA, AL     ; PA entradas
+      IN  AL, PA
+      AND AL, 80h
+      CMP AL, 0
+      JZ  esta_apagada
+
+      MOV BX, OFFSET prendida
+      MOV AL, OFFSET apagada - OFFSET prendida
+      JMP fin
+
+  esta_apagada:
+      MOV BX, OFFSET apagada
+      MOV AL, OFFSET fin_apagada - OFFSET apagada
+
+  fin:
+      INT 7
+      INT 0
+  END
+---
+id: pio-eco-llaves-a-luces
+practica: 2
+title: PIO - Actualizar luces según llaves (loop infinito)
+tags: ["pio","llaves","luces","pa","pb","ca","cb","loop"]
+prompt: |
+  Configurar PA como entrada (llaves) y PB como salida (luces). Copiar continuamente el estado de PA a PB.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 2000h
+      MOV AL, 0FFh
+      OUT CA, AL     ; PA entradas
+      MOV AL, 0
+      OUT CB, AL     ; PB salidas
+
+  poll:
+      IN  AL, PA
+      OUT PB, AL
+      JMP poll
+  END
+---
+id: pio-impresora-letra-A
+practica: 2
+title: PIO - Imprimir letra 'A' con strobe (polling)
+tags: ["pio","impresora","strobe","busy","pa","pb","ca","cb","subrutina"]
+prompt: |
+  Imprimir la letra 'A' con impresora por PIO. Esperar busy=0, escribir el dato por PB y generar flanco ascendente en strobe (bit 1 de PA).
+  Modularizar en: ini_pio, poll, flanco_ascendente, imprimir_caracter.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 1000h
+  CHAR DB "A"
+
+  ORG 3000h
+  ini_pio:
+      MOV AL, 0FDh      ; strobe (PA1) salida=0, busy (PA0) entrada=1
+      OUT CA, AL
+      MOV AL, 0         ; PB salidas
+      OUT CB, AL
+      RET
+
+  ORG 3100h
+  poll:
+      IN  AL, PA
+      AND AL, 1
+      JNZ poll
+      RET
+
+  ORG 3200h
+  flanco_ascendente:
+      IN  AL, PA
+      AND AL, 0FDh      ; poner PA1=0
+      OUT PA, AL
+      IN  AL, PA
+      OR  AL, 02h       ; poner PA1=1
+      OUT PA, AL
+      RET
+
+  ORG 3300h
+  imprimir_caracter:
+      PUSH AX
+      CALL poll
+      POP AX
+      OUT PB, AL
+      CALL flanco_ascendente
+      RET
+
+  ORG 2000h
+      CALL ini_pio
+      MOV AL, CHAR
+      CALL imprimir_caracter
+      INT 0
+  END
+---
+id: pio-impresora-mensaje-fijo
+practica: 2
+title: PIO - Imprimir mensaje fijo por PIO
+tags: ["pio","impresora","strobe","mensaje","subrutina"]
+prompt: |
+  Imprimir "ORGANIZACION Y ARQUITECTURA DE COMPUTADORAS" por PIO usando imprimir_caracter del ejercicio anterior.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 1000h
+  msj DB "ORGANIZACION Y ARQUITECTURA DE COMPUTADORAS"
+  fin DB ?
+
+  ORG 3000h
+  ini_pio:
+      MOV AL, 0FDh
+      OUT CA, AL
+      MOV AL, 0
+      OUT CB, AL
+      RET
+
+  ORG 3100h
+  poll:
+      IN  AL, PA
+      AND AL, 1
+      JNZ poll
+      RET
+
+  ORG 3200h
+  strobe0:
+      IN  AL, PA
+      AND AL, 0FDh
+      OUT PA, AL
+      RET
+
+  ORG 3300h
+  strobe1:
+      IN  AL, PA
+      OR  AL, 02h
+      OUT PA, AL
+      RET
+
+  ORG 3500h
+  imprimir_caracter:
+      PUSH AX
+      CALL poll
+      POP AX
+      OUT PB, AL
+      CALL strobe1
+      CALL strobe0
+      RET
+
+  ORG 2000h
+      CALL ini_pio
+      CALL strobe0
+      MOV BX, OFFSET msj
+      MOV CL, OFFSET fin - OFFSET msj
+
+  lazo:
+      MOV AL, [BX]
+      CALL imprimir_caracter
+      INC BX
+      DEC CL
+      JNZ lazo
+      INT 0
+  END
+---
+id: pio-impresora-eco-5-teclas
+practica: 2
+title: PIO - Leer 5 caracteres por teclado e imprimirlos
+tags: ["pio","impresora","teclado","polling","subrutina"]
+prompt: |
+  Leer cinco caracteres por teclado (INT 6) y enviarlos uno a uno a la impresora por PIO usando imprimir_caracter.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 1000h
+  num_car DB 5
+  car     DB ?
+
+  ORG 3000h
+  ini_pio:
+      MOV AL, 0FDh
+      OUT CA, AL
+      MOV AL, 0
+      OUT CB, AL
+      RET
+
+  ORG 3100h
+  poll:
+      IN  AL, PA
+      AND AL, 1
+      JNZ poll
+      RET
+
+  ORG 3200h
+  strobe0:
+      IN  AL, PA
+      AND AL, 0FDh
+      OUT PA, AL
+      RET
+
+  ORG 3300h
+  strobe1:
+      IN  AL, PA
+      OR  AL, 02h
+      OUT PA, AL
+      RET
+
+  ORG 3500h
+  imprimir_caracter:
+      PUSH AX
+      CALL poll
+      POP AX
+      OUT PB, AL
+      CALL strobe1
+      CALL strobe0
+      RET
+
+  ORG 2000h
+      CALL ini_pio
+      CALL strobe0
+      MOV BX, OFFSET car
+      MOV CL, num_car
+  lazo:
+      INT 6
+      MOV AL, [BX]
+      CALL imprimir_caracter
+      INC BX
+      DEC CL
+      JNZ lazo
+      INT 0
+  END
+---
+id: hand-impresion-mensaje
+practica: 2
+title: Handshake - Imprimir "INGENIERIA E INFORMATICA" (polling)
+tags: ["handshake","impresora","dato","estado","polling"]
+prompt: |
+  Configurar el HANDSHAKE en modo consulta de estado (bit 7 de ESTADO = 0). Esperar busy=0 (bit 0) y enviar por DATO cada carácter de "INGENIERIA E INFORMATICA".
+expected_solution: |
+  DATO   EQU 40h
+  ESTADO EQU 41h
+
+  ORG 1000h
+  msj DB "INGENIERIA E INFORMATICA"
+  fin DB ?
+
+  ORG 3000h
+  poll:
+      IN  AL, ESTADO
+      AND AL, 1
+      JNZ poll
+      RET
+
+  ORG 3200h
+  imprimir_caracter_hand:
+      PUSH AX
+      CALL poll
+      POP AX
+      OUT DATO, AL
+      RET
+
+  ORG 2000h
+      IN  AL, ESTADO
+      AND AL, 7Fh      ; bit 7 = 0 → modo polling
+      OUT ESTADO, AL
+      MOV BX, OFFSET msj
+      MOV CL, OFFSET fin - OFFSET msj
+
+  lazo:
+      MOV AL, [BX]
+      CALL imprimir_caracter_hand
+      INC BX
+      DEC CL
+      JNZ lazo
+      INT 0
+  END
+---
+id: pio-dispositivo-nuevo-enviar-unlp
+practica: 2
+title: PIO - Dispositivo nuevo (enviar 0, char, ..., 255)
+tags: ["pio","pb","protocolo","dispositivo-nuevo","secuencial"]
+prompt: |
+  Enviar por PB la secuencia: 0, 'U', 0, 'N', 0, 'L', 0, 'P', 255 a un dispositivo ficticio que separa caracteres con 0 y finaliza con 255.
+expected_solution: |
+  PB EQU 31h
+  CB EQU 33h
+
+  ORG 1000h
+  cadena DB "UNLP"
+  fin    DB ?
+
+  ORG 2000h
+      MOV AL, 0
+      OUT CB, AL
+
+      MOV BX, OFFSET cadena
+      MOV CL, OFFSET fin - OFFSET cadena
+
+  loop:
+      MOV AL, 0
+      OUT PB, AL
+      MOV AL, [BX]
+      OUT PB, AL
+      INC BX
+      DEC CL
+      JNZ loop
+
+      MOV AL, 255
+      OUT PB, AL
+      INT 0
+  END
+---
+id: pio-dispositivo-nuevo-recepcion-ff
+practica: 2
+title: PIO - Dispositivo nuevo (recibir con handshake FF)
+tags: ["pio","pa","pb","ca","cb","protocolo","recepcion"]
+prompt: |
+  Recibir por PA una cadena de un dispositivo ficticio. Para cada carácter, la CPU envía 0xFF por PB, lee PA y repite; termina cuando recibe 0.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 3000h
+  config_pio:
+      MOV AL, 0
+      OUT CB, AL     ; PB salida
+      MOV AL, 255
+      OUT CA, AL     ; PA entrada
+      RET
+
+  ORG 2000h
+      CALL config_pio
+  loop:
+      MOV AL, 0FFh
+      OUT PB, AL
+      IN  AL, PA
+      CMP AL, 0
+      JNZ loop
+      INT 0
+  END
+---
+id: pio-rotaciones-juego-luces
+practica: 2
+title: PIO - Juego de luces con rotaciones izquierda/derecha
+tags: ["pio","luces","rotaciones","add","adc","subrutina"]
+prompt: |
+  Encender una luz a la vez con el patrón 0→7→0 usando rotaciones. Implementar ROTARIZQ, ROTARIZQ_N y ROTARDER_N; el programa no termina.
+expected_solution: |
+  PB EQU 31h
+  CB EQU 33h
+
+  ORG 3000h
+  ROTARIZQ:
+      ADD AL, AL
+      ADC AL, 0
+      RET
+
+  ROTARIZQ_N:
+      PUSH CX
+      AND  CX, 7
+  sigue_izq:
+      CMP  CX, 0
+      JZ   fin_izq
+      CALL ROTARIZQ
+      DEC  CX
+      JMP  sigue_izq
+  fin_izq:
+      POP  CX
+      RET
+
+  ROTARDER_N:
+      PUSH CX
+      NEG  CX
+      ADD  CX, 8
+      CALL ROTARIZQ_N
+      POP  CX
+      RET
+
+  ORG 2000h
+      MOV AL, 0
+      OUT CB, AL
+      MOV AL, 1
+  loop_izq:
+      OUT PB, AL
+      CALL ROTARIZQ
+      CMP AL, 128
+      JNZ loop_izq
+  loop_der:
+      OUT PB, AL
+      CALL ROTARDER_N
+      CMP AL, 1
+      JNZ loop_der
+      JMP loop_izq
+  END
+---
+id: pio-criptollaves
+practica: 2
+title: PIO - CriptoLlaves (adivinar patrón con feedback)
+tags: ["pio","llaves","luces","xor","comparacion","juego"]
+prompt: |
+  El usuario debe igualar un patrón secreto de 8 bits (clave). Encender cada luz si la llave correspondiente coincide con la clave. Mostrar "GANASTE" al acertar todos los bits.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 1000h
+  clave   DB 10101111b
+  GANASTE DB "GANASTE"
+
+  ORG 3000h
+  config_pio:
+      MOV AL, 0
+      OUT CB, AL
+      MOV AL, 255
+      OUT CA, AL
+      RET
+
+  ORG 2000h
+      CALL config_pio
+  loop:
+      IN  AL, PA
+      XOR AL, clave
+      NOT AL
+      OUT PB, AL
+      CMP AL, 11111111b
+      JNZ loop
+      MOV BX, OFFSET GANASTE
+      MOV AL, 7
+      INT 7
+      INT 0
+  END
+---
+id: pio-patron-10000001-una-vez
+practica: 2
+title: PIO - Mostrar "ACTIVADO" una sola vez al patrón 10000001
+tags: ["pio","llaves","pantalla","debounce-logico","estado"]
+prompt: |
+  Verificar continuamente las llaves. Si el patrón es 10000001, imprimir "ACTIVADO" una sola vez por cada detección (no repetir mientras se mantenga).
+expected_solution: |
+  PA EQU 30h
+  CA EQU 32h
+  patron EQU 10000001b
+
+  ORG 1000h
+  cadena DB "ACTIVADO"
+  fin_cadena DB ?
+
+  ORG 2000h
+      MOV AL, 255
+      OUT CA, AL
+      MOV BX, OFFSET cadena
+
+  loop:
+      IN  AL, PA
+      CMP AL, patron
+      JNZ loop
+      MOV AL, OFFSET fin_cadena - OFFSET cadena
+      INT 7
+
+  loop2:
+      IN  AL, PA
+      CMP AL, patron
+      JZ  loop2
+      JMP loop
+  END
+---
+id: pio-opciones-abc
+practica: 2
+title: PIO - Luces, llaves y opciones A/B/C (subrutinas)
+tags: ["pio","luces","llaves","subrutinas","control-flujo"]
+prompt: |
+  Evaluar continuamente las llaves con tres funciones:
+  A) Si todas apagadas → mostrar "Fin de programa" y terminar.
+  B) Caso contrario, actualizar luces al opuesto.
+  C) Si la primera llave (bit 7) está prendida → mostrar "Arquitectura de Computadoras: ACTIVADA".
+  Implementar A, B y C como subrutinas; A devuelve FIN=1 si debe terminar.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+
+  ORG 1000h
+  MSJ     DB "Arquitectura de Computadoras: ACTIVADA"
+  MSJ_FIN DB "Fin de Programa"
+  FIN     DB 0
+
+  ORG 3000h
+  A:
+      CMP AL, 0
+      JNZ seguir
+      MOV BX, OFFSET MSJ_FIN
+      MOV AL, OFFSET FIN - OFFSET MSJ_FIN
+      INT 7
+      MOV FIN, 1
+  seguir:
+      RET
+
+  ORG 3200h
+  B:
+      PUSH AX
+      NOT AL
+      OUT PB, AL
+      POP AX
+      RET
+
+  ORG 3400h
+  C:
+      PUSH AX
+      AND AL, 10000000b
+      JZ  volver
+      MOV BX, OFFSET MSJ
+      MOV AL, OFFSET MSJ_FIN - OFFSET MSJ
+      INT 7
+  volver:
+      POP AX
+      RET
+
+  ORG 2000h
+      MOV AL, 0FFh
+      OUT CA, AL
+      MOV AL, 0
+      OUT CB, AL
+
+  loop:
+      IN  AL, PA
+      CALL A
+      CMP FIN, 1
+      JZ  terminar
+      CALL B
+      CALL C
+      JMP loop
+
+  terminar:
+      INT 0
+  END
+---
+id: f10-counter
+practica: 3
+title: Contador de pulsaciones con F10
+tags: [asm, interrupciones, F10, PIC, teclado]
+prompt: |
+  Escribir un programa que cuente cuántas veces se presiona la tecla F10 y acumule
+  ese valor en el registro DX. El programa no debe terminar (loop infinito).
+  Configurar el PIC, vector INT0 y atender la interrupción con EOI.
+expected_solution: |
+  ; Registros y constantes
+  EOI EQU 20H
+  IMR EQU 21H
+  INT0 EQU 24h
+  N_F10 EQU 15
+
+  ORG 60
+  IP_F10 DW RUT_F10
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FEH
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      MOV DX, 0
+      STI
+  LAZO: JMP LAZO
+
+  ORG 3000H
+  RUT_F10: PUSH AX
+      INC DX
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+  END
+---
+id: f10-message-infinite
+practica: 3
+title: F10 muestra mensaje (infinito)
+tags: [asm, interrupciones, F10, pantalla]
+prompt: |
+  Mostrar “Vamos las interrupciones!” cada vez que se presione F10.
+  El programa no debe terminar.
+expected_solution: |
+  EOI EQU 20H
+  IMR EQU 21H
+  INT0 EQU 24h
+  N_F10 EQU 15
+
+  ORG 60
+  IP_F10 DW RUT_F10
+
+  ORG 1000H
+  TEXTO DB "Vamos las interrupciones!"
+  FIN_TEXTO DB ?
+
+  ORG 3000H
+  RUT_F10: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET TEXTO
+      MOV AL, OFFSET FIN_TEXTO - OFFSET TEXTO
+      INT 7
+      MOV AL, EOI
+      OUT EOI, AL
+      POP BX
+      POP AX
+      IRET
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FEH
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      STI
+  LAZO: JMP LAZO
+  END
+---
+id: f10-message-5-times
+practica: 3
+title: F10 muestra 5 veces y termina
+tags: [asm, interrupciones, F10, pantalla, control-de-flujo]
+prompt: |
+  Mostrar “Vamos las interrupciones!” cada vez que se presiona F10,
+  pero finalizar el programa luego de la 5ta vez (deshabilitar interrupciones).
+expected_solution: |
+  EOI EQU 20H
+  IMR EQU 21H
+  INT0 EQU 24h
+  N_F10 EQU 15
+
+  ORG 1000H
+  TEXTO DB "Vamos las interrupciones!"
+  FIN_TEXTO DB ?
+  CANT DB 0
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FEH
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      STI
+  LAZO: CMP CANT, 5
+        JNZ LAZO
+        INT 0
+
+  ORG 3000H
+  RUT_F10: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET TEXTO
+      MOV AL, OFFSET FIN_TEXTO - OFFSET TEXTO
+      INT 7
+      INC CANT
+      CMP CANT,5
+      JNZ SIGUE
+      MOV AL, 0FFh
+      OUT IMR, AL
+  SIGUE:
+      MOV AL, EOI
+      OUT EOI, AL
+      POP BX
+      POP AX
+      IRET
+  END
+---
+id: timer-periodic-2s
+practica: 3
+title: Timer periódico cada 2 segundos (infinito)
+tags: [asm, interrupciones, timer, pantalla]
+prompt: |
+  Mostrar “Vamos las interrupciones!” una vez cada 2 segundos utilizando el Timer.
+  El programa no finaliza.
+expected_solution: |
+  EOI EQU 20H
+  IMR EQU 21H
+  INT1 EQU 25h
+  CONT EQU 10h
+  COMP EQU 11h
+  N_TIMER EQU 20
+
+  ORG 80
+  IP_TIMER DW RUT_TIMER
+
+  ORG 1000H
+  TEXTO DB "Vamos las interrupciones!"
+  FIN_TEXTO DB ?
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FDH
+      OUT IMR, AL
+      MOV AL, N_TIMER
+      OUT INT1, AL
+      MOV AL, 2
+      OUT COMP, AL
+      MOV AL, 0
+      OUT CONT, AL
+      STI
+  LAZO: JMP LAZO
+
+  ORG 3000H
+  RUT_TIMER: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET TEXTO
+      MOV AL, OFFSET FIN_TEXTO - OFFSET TEXTO
+      INT 7
+      MOV AL, EOI
+      OUT EOI, AL
+      MOV AL, 0
+      OUT CONT, AL
+      POP BX
+      POP AX
+      IRET
+  END
+---
+id: timer-10s-end
+practica: 3
+title: Timer periódico y finalizar a los 10 segundos
+tags: [asm, interrupciones, timer, pantalla]
+prompt: |
+  Variante del ejercicio periódico: imprimir el mensaje cada 2 s pero terminar a los 10 s.
+expected_solution: |
+  EOI EQU 20H
+  IMR EQU 21H
+  INT1 EQU 25h
+  CONT EQU 10h
+  COMP EQU 11h
+  N_TIMER EQU 20
+
+  ORG 80
+  IP_TIMER DW RUT_TIMER
+
+  ORG 1000H
+  TEXTO DB "Vamos las interrupciones!"
+  FIN_TEXTO DB ?
+  CANT DB 0
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FDH
+      OUT IMR, AL
+      MOV AL, N_TIMER
+      OUT INT1, AL
+      MOV AL, 2
+      OUT COMP, AL
+      MOV AL, 0
+      OUT CONT, AL
+      STI
+  LAZO: CMP CANT, 5
+        JNZ LAZO
+        INT 0
+
+  ORG 3000H
+  RUT_TIMER: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET TEXTO
+      MOV AL, OFFSET FIN_TEXTO - OFFSET TEXTO
+      INT 7
+      INC CANT
+      CMP CANT, 5
+      JNZ SIGUE
+      MOV AL, 0FFh
+      OUT IMR, AL
+  SIGUE:
+      MOV AL, EOI
+      OUT EOI, AL
+      MOV AL, 0
+      OUT CONT, AL
+      POP BX
+      POP AX
+      IRET
+  END
+---
+id: timer-single-10s
+practica: 3
+title: Timer una sola vez a los 10 segundos
+tags: [asm, interrupciones, timer, pantalla]
+prompt: |
+  Imprimir “Vamos las interrupciones!” una única vez a los 10 segundos y terminar.
+expected_solution: |
+  EOI EQU 20H
+  IMR EQU 21H
+  INT1 EQU 25h
+  CONT EQU 10h
+  COMP EQU 11h
+  N_TIMER EQU 20
+
+  ORG 80
+  IP_TIMER DW RUT_TIMER
+
+  ORG 1000H
+  TEXTO DB "Vamos las interrupciones!"
+  FIN_TEXTO DB ?
+  TERMINA DB 0
+
+  ORG 3000H
+  RUT_TIMER: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET TEXTO
+      MOV AL, OFFSET FIN_TEXTO - OFFSET TEXTO
+      INT 7
+      INC TERMINA
+      MOV AL, 0FFh
+      OUT IMR, AL
+      MOV AL, EOI
+      OUT EOI, AL
+      MOV AL, 0
+      OUT CONT, AL
+      POP BX
+      POP AX
+      IRET
+
+  ORG 2000H
+      CLI
+      MOV AL, 0FDH
+      OUT IMR, AL
+      MOV AL, N_TIMER
+      OUT INT1, AL
+      MOV AL, 10
+      OUT COMP, AL
+      MOV AL, 0
+      OUT CONT, AL
+      STI
+  LAZO: CMP TERMINA, 0
+        JZ LAZO
+        INT 0
+  END
+---
+id: countdown-start-on-f10
+practica: 3
+title: Conteo regresivo que inicia con F10
+tags: [asm, interrupciones, F10, timer, pantalla]
+prompt: |
+  Leer un dígito (1..9). Al presionar F10, comenzar a mostrar en pantalla el conteo
+  regresivo “n ... 0”, actualizando cada segundo con el Timer. Terminar al llegar a 0.
+expected_solution: |
+  CONT EQU 10H
+  COMP EQU 11H
+  EOI  EQU 20H
+  IMR  EQU 21H
+  INT0 EQU 24h
+  INT1 EQU 25H
+  N_F10 EQU 10
+  N_CLK EQU 15
+
+  ORG 40
+  IP_F10 DW RUT_F10
+  ORG 60
+  IP_CLK DW RUT_CLK
+
+  ORG 1000H
+  CONTADOR DB 39H
+  FINAL DB 0
+
+  ORG 3000H
+  RUT_CLK: PUSH AX
+      PUSH BX
+      MOV BX, OFFSET CONTADOR
+      MOV AL, 1
+      INT 7
+      CMP CONTADOR, 30h
+      JNZ SIGUE
+      MOV AL, 0FFH
+      OUT IMR, AL
+      MOV FINAL, 1
+  SIGUE:
+      DEC CONTADOR
+      MOV AL, 0
+      OUT CONT, AL
+      MOV AL, EOI
+      OUT EOI, AL
+      POP BX
+      POP AX
+      IRET
+
+  ORG 3200H
+  RUT_F10: PUSH AX
+      MOV AL, 0FDH
+      OUT IMR, AL
+      MOV AL, 0
+      OUT CONT, AL
+      MOV AL, 1
+      OUT COMP, AL
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+
+  ORG 3400H
+  LEE_NUMERO:
+      MOV BX, OFFSET CONTADOR
+  REPITE:
+      INT 6
+      MOV AL, CONTADOR
+      CMP AL, 30H
+      JS REPITE
+      CMP AL, 39H
+      JNS REPITE
+      RET
+
+  ORG 2000H
+      CALL LEE_NUMERO
+      CLI
+      MOV AL, 0FEH
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      MOV AL, N_CLK
+      OUT INT1, AL
+      STI
+  BUCLE: CMP FINAL, 0
+         JZ BUCLE
+         INT 0
+---
+id: handshake-print-unlp
+practica: 3
+title: Impresión por HANDSHAKE con interrupciones
+tags: [asm, interrupciones, handshake, impresora]
+prompt: |
+  Imprimir “UNIVERSIDAD NACIONAL DE LA PLATA” en la impresora usando HANDSHAKE.
+  Cada vez que la impresora se desocupa, el HANDSHAKE genera una interrupción que
+  envía el siguiente carácter.
+expected_solution: |
+  IMR EQU 21H
+  EOI EQU 20H
+  INT2 EQU 26H
+  DATO EQU 40H
+  EST  EQU 41H
+  N_HND EQU 10
+
+  ORG 40
+  DW RUT_HND
+
+  ORG 1000H
+  MSJ DB "UNIVERSIDAD NACIONAL DE LA PLATA"
+  FIN DB ?
+
+  ORG 2000H
+      MOV BX, OFFSET MSJ
+      MOV CL, OFFSET FIN - OFFSET MSJ
+      CLI
+      MOV AL, 0FBH
+      OUT IMR, AL
+      MOV AL, N_HND
+      OUT INT2, AL
+      MOV AL, 80H
+      OUT EST, AL
+      STI
+  LAZO: CMP CL, 0
+        JNZ LAZO
+        IN AL, EST
+        AND AL, 7FH
+        OUT EST, AL
+        INT 0
+
+  ORG 3000H
+  RUT_HND: PUSH AX
+      MOV AL, [BX]
+      OUT DATO, AL
+      INC BX
+      DEC CL
+      JNZ FINAL
+      MOV AL, 0FFH
+      OUT IMR, AL
+  FINAL:
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+  END
+---
+id: pio-toggle-lights-f10
+practica: 3
+title: F10 alterna luces con PIO (ON/OFF)
+tags: [asm, interrupciones, PIO, F10, IO]
+prompt: |
+  Al presionar F10 encender todas las luces; al presionarlo nuevamente, apagarlas.
+  El programa no termina.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+  IMR EQU 21h
+  EOI EQU 20h
+  INT0 EQU 24h
+  N_F10 EQU 10
+
+  ORG 40
+  DW RUT_F10
+
+  ORG 1000h
+  ESTADO DB 0
+
+  ORG 3200h
+  RUT_F10: PUSH AX
+      XOR ESTADO, 0FFh
+      MOV AL, ESTADO
+      OUT PB, AL
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+
+  ORG 2000h
+      CLI
+      MOV AL, 0
+      OUT CB, AL
+      OUT PB, AL
+      MOV AL, 0FEh
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      STI
+  LOOP: JMP LOOP
+  END
+---
+id: roulette-f10-select
+practica: 3
+title: Ruleta 0..9 y selección con F10
+tags: [asm, interrupciones, F10, azar, pantalla]
+prompt: |
+  Iterar continuamente un registro con los dígitos '0'..'9'. Al presionar F10,
+  fijar el valor actual y mostrarlo en pantalla. Terminar.
+expected_solution: |
+  IMR EQU 21h
+  EOI EQU 20h
+  INT0 EQU 24h
+  N_F10 EQU 10
+
+  ORG 40
+  DW RUT_F10
+
+  ORG 1000h
+  FINALIZADO DB 0
+  NUM DB ?
+
+  ORG 3200h
+  RUT_F10: PUSH AX
+      MOV FINALIZADO,1
+      MOV AL, 0FFh
+      OUT IMR, AL
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+
+  ORG 2000h
+      CLI
+      MOV AL, 0FEh
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      STI
+      MOV DL, '0'
+  LOOP: CMP FINALIZADO, 1
+        JZ ELEGIDO
+        INC DL
+        CMP DL, '9'
+        JNZ LOOP
+        MOV DL, '0'
+        JMP LOOP
+  ELEGIDO:
+      MOV BX, OFFSET NUM
+      MOV [BX], DL
+      MOV AL, 1
+      INT 7
+      INT 0
+  END
+---
+id: print-on-f10-pio
+practica: 3
+title: Leer cadena y enviar a impresora por PIO al presionar F10
+tags: [asm, interrupciones, PIO, teclado, impresora]
+prompt: |
+  Leer caracteres por teclado y almacenarlos en memoria. Al presionar F10, enviar
+  la cadena a la impresora por PIO. No es necesario mostrarla en pantalla.
+expected_solution: |
+  PA EQU 30h
+  PB EQU 31h
+  CA EQU 32h
+  CB EQU 33h
+  IMR EQU 21h
+  EOI EQU 20h
+  INT0 EQU 24h
+  N_F10 EQU 10
+
+  ORG 40
+  DW RUT_F10
+
+  ORG 1000h
+  FIN_LEER DB 0
+  LARGO DB 0
+  CADENA DB ?
+
+  ORG 3200h
+  RUT_F10: PUSH AX
+      MOV AL, 0FFh
+      OUT IMR, AL
+      MOV FIN_LEER, 1
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+
+  ORG 3000h
+  LEE_CADENA:
+      CLI
+      MOV AL, 0FEh
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      STI
+      MOV BX, OFFSET CADENA
+      MOV LARGO, 0
+  SIGUE:
+      INT 6
+      INC BX
+      INC LARGO
+      CMP FIN_LEER, 0
+      JZ SIGUE
+      RET
+
+  ORG 2000h
+      CALL LEE_CADENA
+      MOV AL, 0FDh
+      OUT CA, AL
+      MOV AL, 0
+      OUT CB, AL
+      IN AL, PA
+      AND AL, 11111101b
+      OUT PA, AL
+      MOV CL, LARGO
+      MOV BX, OFFSET CADENA
+  POLL:
+      IN AL, PA
+      AND AL, 01h
+      JNZ POLL
+      MOV AL, [BX]
+      OUT PB, AL
+      IN AL, PA
+      OR AL, 00000010b
+      OUT PA, AL
+      IN AL, PA
+      AND AL, 11111101b
+      OUT PA, AL
+      INC BX
+      DEC CL
+      JNZ POLL
+      INT 0
+  END
+---
+id: hs-cancel-with-f10
+practica: 3
+title: Cancelar impresión por HANDSHAKE con F10
+tags: [asm, interrupciones, handshake, F10, impresora]
+prompt: |
+  Imprimir un string por HANDSHAKE con interrupciones, pero si se presiona F10,
+  cancelar la impresión desactivando las interrupciones del HANDSHAKE y finalizar.
+expected_solution: |
+  IMR EQU 21H
+  EOI EQU 20H
+  INT0 EQU 24H
+  INT2 EQU 26H
+  EST EQU 41H
+  DATO EQU 40H
+  N_HND EQU 10
+  N_F10 EQU 15
+
+  ORG 40
+  DW RUT_HND
+  ORG 60
+  DW RUT_F10
+
+  ORG 1000H
+  MSJ DB "UNIVERSIDAD NACIONAL DE LA PLATA"
+  FIN DB ?
+  TERMINO DB 0
+
+  ORG 2000H
+      MOV BX, OFFSET MSJ
+      MOV CL, OFFSET FIN - OFFSET MSJ
+      CLI
+      MOV AL, 0FAH
+      OUT IMR, AL
+      MOV AL, N_F10
+      OUT INT0, AL
+      MOV AL, N_HND
+      OUT INT2, AL
+      MOV AL, 80H
+      OUT EST, AL
+      STI
+  LAZO: CMP TERMINO, 0
+        JZ LAZO
+        INT 0
+
+  ORG 3000H
+  RUT_HND: PUSH AX
+      MOV AL, [BX]
+      OUT DATO, AL
+      INC BX
+      DEC CL
+      JNZ FINAL
+      MOV AL, 0FFH
+      OUT IMR, AL
+      IN AL, EST
+      AND AL, 7FH
+      OUT EST, AL
+      MOV TERMINO, 1
+  FINAL:
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+
+  ORG 3200H
+  RUT_F10: PUSH AX
+      MOV AL, 0FFH
+      OUT IMR, AL
+      IN AL, EST
+      AND AL, 7FH
+      OUT EST, AL
+      MOV TERMINO, 1
+      MOV AL, EOI
+      OUT EOI, AL
+      POP AX
+      IRET
+  END
