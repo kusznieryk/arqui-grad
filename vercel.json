@@ -1,13 +1,7 @@
 {
-  "env": {
-    "DATABASE_URL": "@database_url",
-    "NEXTAUTH_SECRET": "@nextauth_secret",
-    "NEXTAUTH_URL": "@nextauth_url",
-    "GOOGLE_API_KEY": "@google_api_key"
-  },
   "build": {
     "env": {
-      "DATABASE_URL": "@database_url"
+      "PRISMA_GENERATE_DATAPROXY": "true"
     }
   }
 }
