@@ -4,7 +4,7 @@ import { sanitizeAsm } from "@/lib/sanitizer";
 const MODEL_ID = 'gemini-2.5-flash-lite';
 function buildPrompt(args: { promptEs: string; expectedAsm: string; studentAsm: string }) {
   const sanitized = sanitizeAsm(args.studentAsm);
-  const { promptEs, expectedAsm, studentAsm } = args;
+  const { promptEs, expectedAsm } = args;
   if (sanitized.length === 0) {
     throw new Error("Sanitized code is empty");
   }
