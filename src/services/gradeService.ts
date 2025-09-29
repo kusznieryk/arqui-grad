@@ -14,6 +14,7 @@ function buildPrompt(args: { promptEs: string; expectedAsm: string; studentAsm: 
     'Output MUST be valid JSON, in Spanish, following the schema below.\n' +
     'Be strict but constructive. Focus on correctness, common assembly pitfalls,\n' +
     'edge cases, registers usage, memory addressing, calling conventions, and I/O handling.\n\n' +
+    'Remember that instructions and Ensambler directives are insensitive to case\n'+
     'ASSIGNMENT (Spanish):\n' + promptEs + '\n\n' +
     'REQUIREMENTS:\n' +
     '- Evaluate ONLY for the specified assembly target MSX86.\n' +
