@@ -4,8 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && prisma migrate deploy && node scripts/seed-exercises.js && next build",
-    "build:vercel": "prisma generate && next build",
+    "build": "npm run build:production",
+    "build:development": "prisma generate && prisma migrate deploy && node scripts/seed-exercises.js && next build",
+    "build:production": "cp prisma/schema.production.prisma prisma/schema.prisma && prisma generate && node scripts/seed-exercises.js && next build",
     "start": "next start",
     "lint": "eslint",
     "migrate": "prisma migrate dev",
