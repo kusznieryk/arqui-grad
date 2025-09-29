@@ -4,13 +4,12 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/switch-to-production-schema.js && prisma generate && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "migrate": "prisma migrate dev",
     "migrate:prod": "prisma migrate deploy",
     "seed": "node scripts/seed-exercises.js",
-    "seed:safe": "node scripts/safe-seed.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
