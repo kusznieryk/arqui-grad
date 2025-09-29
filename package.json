@@ -4,8 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "node scripts/switch-to-production-schema.js && prisma generate && next build",
-    "build:development": "prisma generate && prisma migrate deploy && node scripts/seed-exercises.js && next build",
+    "build": "prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
     "migrate": "prisma migrate dev",
