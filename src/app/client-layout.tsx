@@ -11,7 +11,7 @@ export default function ClientLayout({
   return (
     <SessionProvider>
       <Navbar />
-      <main>{children}</main>
+      <main className="pt-16">{children}</main>
     </SessionProvider>
   );
 }
