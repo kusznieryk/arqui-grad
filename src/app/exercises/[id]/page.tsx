@@ -3,9 +3,24 @@ import SubmitForm from './submit-form';
 
 // Helper function to safely get a string array from JsonValue
 function getStringArrayFromJson(value: any): string[] {
+  console.log('Tags raw value:', value, 'Type:', typeof value);
+  
   if (Array.isArray(value) && value.every(item => typeof item === 'string')) {
     return value;
   }
+  
+  // Try to parse if it's a JSON string
+  if (typeof value === 'string') {
+    try {
+      const parsed = JSON.parse(value);
+      if (Array.isArray(parsed) && parsed.every(item => typeof item === 'string')) {
+        return parsed;
+      }
+    } catch (e) {
+      console.log('Failed to parse JSON string:', e);
+    }
+  }
+  
   return [];
 }
 
@@ -91,6 +106,10 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
     select: { id: true, createdAt: true, score: true, isCorrect: true, resultJson: true } 
   });
 
+  // Process tags once at the component level
+  const tags = getStringArrayFromJson(ex.tags);
+  console.log('Processed tags:', tags);
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
       <div className="max-w-6xl mx-auto p-4 space-y-8">
@@ -107,21 +126,18 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
             </div>
             
             {/* Tags */}
-            {(() => {
-              const tags = getStringArrayFromJson(ex.tags);
-              return tags.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-4">
-                  {tags.map((tag: string, index: number) => (
-                    <span 
-                      key={index}
-                      className="bg-white bg-opacity-20 text-white px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm"
-                    >
-                      🏷️ {tag}
-                    </span>
-                  ))}
-                </div>
-              );
-            })()}
+            {tags.length > 0 && (
+              <div className="flex flex-wrap gap-2 mt-4">
+                {tags.map((tag: string, index: number) => (
+                  <span 
+                    key={index}
+                    className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm text-gray-900"
+                  >
+                    🏷️ {tag}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
         </div>
 
