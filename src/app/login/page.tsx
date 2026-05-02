@@ -65,7 +65,7 @@ export default function LoginPage() {
           </div>
 
           <div className="bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] p-8">
-            <form className="space-y-6" onSubmit={onSubmit}>
+            <form className="space-y-6" onSubmit={onSubmit} noValidate>
               <div className="space-y-2">
                 <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-primary)]">
                   Correo Electrónico
@@ -151,16 +151,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      <style jsx>{`
-        @keyframes shake {
-          0%, 100% { transform: translateX(0); }
-          25% { transform: translateX(-5px); }
-          75% { transform: translateX(5px); }
-        }
-        .animate-shake {
-          animation: shake 0.5s ease-in-out;
-        }
-      `}</style>
+
     </div>
   );
 }

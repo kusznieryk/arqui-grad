@@ -22,6 +22,8 @@
   --color-error: #ff4444;
   --color-error-bg: rgba(255, 68, 68, 0.1);
   --color-success: #3dffa0;
+  --color-border-tertiary: #1e1e1e;
+  --color-background-secondary: #0e0e0e;
 }
 
 @media (prefers-color-scheme: dark) {
