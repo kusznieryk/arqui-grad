@@ -17,4 +17,21 @@ export const GradeResultSchema = z.object({
 
 export type GradeResult = z.infer<typeof GradeResultSchema>;
 
+export const LoginSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string().min(1, 'Contraseña requerida'),
+});
+
+export type LoginInput = z.infer<typeof LoginSchema>;
+
+export const RegisterSchema = z.object({
+  email: z.string().email('Email inválido'),
+  password: z.string()
+    .min(8, 'Mínimo 8 caracteres')
+    .regex(/[0-9]/, 'Debe contener al menos 1 número')
+    .regex(/[A-Z]/, 'Debe contener al menos 1 mayúscula'),
+});
+
+export type RegisterInput = z.infer<typeof RegisterSchema>;
+
 
