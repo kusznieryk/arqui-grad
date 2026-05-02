@@ -1,17 +1,20 @@
 "use client";
 import { signIn } from 'next-auth/react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useState, useEffect } from 'react';
+import { LoginSchema } from '@/lib/zod';
 
 export default function LoginPage() {
+  const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<{ email?: string; password?: string }>({});
   const [isLoading, setIsLoading] = useState(false);
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Small delay to ensure hydration is complete
     const timer = setTimeout(() => setIsLoaded(true), 100);
     return () => clearTimeout(timer);
   }, []);
@@ -19,6 +22,19 @@ export default function LoginPage() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError(null);
+    setFieldErrors({});
+
+    const result = LoginSchema.safeParse({ email, password });
+    if (!result.success) {
+      const errors: { email?: string; password?: string } = {};
+      result.error.errors.forEach(err => {
+        if (err.path[0] === 'email') errors.email = err.message;
+        if (err.path[0] === 'password') errors.password = err.message;
+      });
+      setFieldErrors(errors);
+      return;
+    }
+
     setIsLoading(true);
     
     try {
@@ -26,7 +42,7 @@ export default function LoginPage() {
       if (res?.error) {
         setError('Credenciales inválidas. Verifica tu email y contraseña.');
       } else {
-        window.location.href = '/exercises';
+        router.push('/exercises');
       }
     } catch (err) {
       setError('Error de conexión. Inténtalo de nuevo.');
@@ -36,115 +52,97 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center px-4 sm:px-6 lg:px-8">
-      {/* Background Decorations */}
-      <div className="absolute inset-0 overflow-hidden">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-r from-purple-400 to-pink-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>
-        <div className="absolute -bottom-8 left-20 w-96 h-96 bg-gradient-to-r from-pink-400 to-yellow-400 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-4000"></div>
-      </div>
-
+    <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center px-4 sm:px-6 lg:px-8">
       <div className="relative max-w-md w-full">
         <div className={`transition-all duration-1000 ${isLoaded ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8'}`} suppressHydrationWarning>
-          {/* Header */}
           <div className="text-center mb-8">
-            <div className="flex items-center justify-center gap-3 mb-6">
-              <span className="text-4xl animate-bounce">🔐</span>
-              <h1 className="text-3xl font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 bg-clip-text text-transparent">
-                Iniciar Sesión
-              </h1>
-            </div>
-            <p className="text-lg text-gray-600">
+            <h1 className="text-3xl font-bold text-[var(--color-text-primary)] mb-2">
+              Iniciar Sesión
+            </h1>
+            <p className="text-lg text-[var(--color-text-secondary)]">
               Bienvenido de vuelta a <span className="font-semibold">Arqui ASM</span>
             </p>
           </div>
 
-          {/* Form Card */}
-          <div className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-2xl border border-white/20 p-8">
+          <div className="bg-[var(--color-surface)] rounded-2xl border border-[var(--color-border)] p-8">
             <form className="space-y-6" onSubmit={onSubmit}>
-              {/* Email Input */}
               <div className="space-y-2">
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                  📧 Correo Electrónico
+                <label htmlFor="email" className="block text-sm font-medium text-[var(--color-text-primary)]">
+                  Correo Electrónico
                 </label>
                 <input 
                   id="email"
                   type="email"
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 hover:bg-gray-50" 
+                  className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all duration-200" 
                   placeholder="tu@email.com" 
                   value={email} 
                   onChange={e => setEmail(e.target.value)}
                   disabled={isLoading}
                 />
+                {fieldErrors.email && (
+                  <p className="text-[var(--color-error)] text-sm">{fieldErrors.email}</p>
+                )}
               </div>
 
-              {/* Password Input */}
               <div className="space-y-2">
-                <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                  🔒 Contraseña
+                <label htmlFor="password" className="block text-sm font-medium text-[var(--color-text-primary)]">
+                  Contraseña
                 </label>
                 <input 
                   id="password"
                   type="password" 
-                  required
-                  className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all duration-200 bg-white text-gray-900 placeholder-gray-500 hover:bg-gray-50" 
+                  className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all duration-200" 
                   placeholder="Tu contraseña segura" 
                   value={password} 
                   onChange={e => setPassword(e.target.value)}
                   disabled={isLoading}
                 />
+                {fieldErrors.password && (
+                  <p className="text-[var(--color-error)] text-sm">{fieldErrors.password}</p>
+                )}
               </div>
 
-              {/* Error Message */}
               {error && (
-                <div className="bg-red-50 border border-red-200 rounded-xl p-4 flex items-center gap-3 animate-shake">
-                  <span className="text-red-500 text-xl">⚠️</span>
-                  <div className="text-red-700 text-sm font-medium">{error}</div>
+                <div className="bg-[var(--color-error-bg)] border border-[var(--color-error)] rounded-xl p-4">
+                  <p className="text-[var(--color-error)] text-sm font-medium">{error}</p>
                 </div>
               )}
 
-              {/* Submit Button */}
               <button 
                 type="submit" 
                 disabled={isLoading || !email || !password}
-                className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 disabled:from-gray-400 disabled:to-gray-500 text-white py-3 px-6 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105 hover:shadow-xl disabled:scale-100 disabled:shadow-none flex items-center justify-center gap-3"
+                className="w-full bg-[var(--color-accent)] text-[var(--color-bg)] font-semibold py-3 px-6 rounded-xl text-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3 hover:opacity-90"
               >
                 {isLoading ? (
                   <>
-                    <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                    <div className="animate-spin h-5 w-5 border-2 border-[var(--color-bg)] border-t-transparent rounded-full"></div>
                     Iniciando sesión...
                   </>
                 ) : (
-                  <>
-                    <span className="group-hover:animate-pulse">🚀</span>
-                    Entrar
-                  </>
+                  'Entrar'
                 )}
               </button>
             </form>
 
-            {/* Divider */}
-            <div className="mt-8 pt-6 border-t border-gray-200">
+            <div className="mt-8 pt-6 border-t border-[var(--color-border)]">
               <div className="text-center">
-                <p className="text-gray-600">
+                <p className="text-[var(--color-text-secondary)]">
                   ¿Aún no tienes cuenta?{' '}
                   <Link 
                     href="/register" 
-                    className="font-semibold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent hover:from-purple-700 hover:to-pink-700 transition-all duration-200"
+                    className="font-semibold text-[var(--color-accent)] hover:opacity-80 transition-all duration-200"
                   >
-                    Regístrate aquí ✨
+                    Regístrate
                   </Link>
                 </p>
               </div>
             </div>
           </div>
 
-          {/* Back to Home */}
           <div className="text-center mt-6">
             <Link 
               href="/" 
-              className="inline-flex items-center gap-2 text-gray-600 hover:text-purple-600 transition-colors duration-200 font-medium"
+              className="inline-flex items-center gap-2 text-[var(--color-text-secondary)] hover:text-[var(--color-accent)] transition-colors duration-200 font-medium"
             >
               <span>←</span>
               Volver al inicio
@@ -153,23 +151,7 @@ export default function LoginPage() {
         </div>
       </div>
 
-      {/* Custom CSS for animations */}
       <style jsx>{`
-        @keyframes blob {
-          0% { transform: translate(0px, 0px) scale(1); }
-          33% { transform: translate(30px, -50px) scale(1.1); }
-          66% { transform: translate(-20px, 20px) scale(0.9); }
-          100% { transform: translate(0px, 0px) scale(1); }
-        }
-        .animate-blob {
-          animation: blob 7s infinite;
-        }
-        .animation-delay-2000 {
-          animation-delay: 2s;
-        }
-        .animation-delay-4000 {
-          animation-delay: 4s;
-        }
         @keyframes shake {
           0%, 100% { transform: translateX(0); }
           25% { transform: translateX(-5px); }
@@ -182,5 +164,3 @@ export default function LoginPage() {
     </div>
   );
 }
-
-
