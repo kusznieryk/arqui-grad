@@ -28,6 +28,7 @@ export const RegisterSchema = z.object({
   email: z.string().email('Email inválido'),
   password: z.string()
     .min(8, 'Mínimo 8 caracteres')
+    .max(128, 'Máximo 128 caracteres')
     .regex(/[0-9]/, 'Debe contener al menos 1 número')
     .regex(/[A-Z]/, 'Debe contener al menos 1 mayúscula'),
 });
