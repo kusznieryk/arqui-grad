@@ -8,7 +8,6 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  // Handle scroll effect
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 10);
@@ -23,134 +22,91 @@ export default function Navbar() {
   };
 
   return (
-    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 ${
-      isScrolled 
-        ? 'bg-white/95 backdrop-blur-md shadow-lg border-b border-gray-200' 
-        : 'bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600'
+    <nav className={`fixed w-full top-0 z-50 transition-all duration-300 bg-[var(--color-bg)] border-b border-[var(--color-border)] ${
+      isScrolled ? 'shadow-lg' : ''
     }`}>
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-16">
+      <div className="max-w-7xl mx-auto px-8 sm:px-10 lg:px-12">
+        <div className="flex justify-between items-center h-[52px]">
           
-          {/* Logo and Brand */}
-          <Link href="/" className="flex items-center gap-3 group">
-            <div className="relative">
-              <span className="text-2xl group-hover:scale-110 transition-transform duration-200">
-                💻
-              </span>
-              <div className="absolute -inset-1 bg-gradient-to-r from-blue-400 to-purple-400 rounded-full opacity-0 group-hover:opacity-20 transition-opacity duration-200"></div>
+          <Link href="/" className="flex items-center gap-2">
+            <div className="w-[26px] h-[26px] border-[1.5px] border-[var(--color-accent)] rounded-[4px] flex items-center justify-center font-mono text-[11px] text-[var(--color-accent)] tracking-[-0.5px]">
+              ASM
             </div>
-            <div>
-              <h1 className={`text-xl font-bold transition-colors duration-300 ${
-                isScrolled ? 'text-gray-800' : 'text-white'
-              }`}>
-                Arqui ASM
-              </h1>
-              <p className={`text-xs transition-colors duration-300 ${
-                isScrolled ? 'text-gray-500' : 'text-white/75'
-              }`}>
-                Assembly Learning
-              </p>
-            </div>
+            <span className="text-[14px] font-medium text-white">
+              Arqui ASM
+            </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden md:flex items-center space-x-1">
+          <div className="hidden md:flex items-center gap-6">
             <Link 
               href="/exercises" 
-              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
-                isScrolled 
-                  ? 'text-gray-700 hover:bg-blue-50 hover:text-blue-700' 
-                  : 'text-white hover:bg-white/20'
-              }`}
+              className="text-[13px] text-[var(--color-text-secondary)] hover:text-white transition-colors"
             >
-              <span className="mr-2">📚</span>
               Ejercicios
             </Link>
             
             {(session?.user as any)?.isAdmin && (
               <Link 
                 href="/admin" 
-                className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 ${
-                  isScrolled 
-                    ? 'text-gray-700 hover:bg-purple-50 hover:text-purple-700' 
-                    : 'text-white hover:bg-white/20'
-                }`}
+                className="text-[13px] text-[var(--color-text-secondary)] hover:text-white transition-colors"
               >
-                <span className="mr-2">⚙️</span>
                 Admin
               </Link>
             )}
           </div>
 
-          {/* User Authentication Section */}
-          <div className="hidden md:flex items-center space-x-3">
+          <div className="hidden md:flex items-center gap-3">
             {status === 'loading' ? (
               <div className="flex items-center gap-2">
-                <div className="animate-spin h-4 w-4 border-2 border-white border-t-transparent rounded-full"></div>
-                <span className={`text-sm ${isScrolled ? 'text-gray-600' : 'text-white/75'}`}>
+                <div className="animate-spin h-4 w-4 border-2 border-[var(--color-accent)] border-t-transparent rounded-full"></div>
+                <span className="text-[13px] text-[var(--color-text-secondary)]">
                   Cargando...
                 </span>
               </div>
             ) : session ? (
-              <div className="flex items-center space-x-3">
-                {/* User Info */}
-                <div className={`flex items-center gap-2 px-3 py-2 rounded-lg ${
-                  isScrolled ? 'bg-gray-100' : 'bg-white/20'
-                }`}>
-                  <div className="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold text-sm">
+              <div className="flex items-center gap-3">
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <div className="w-8 h-8 bg-[var(--color-accent)] rounded-full flex items-center justify-center text-[var(--color-bg)] font-bold text-[13px]">
                     {session.user?.email?.charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <p className={`text-sm font-medium ${
-                      isScrolled ? 'text-gray-800' : 'text-white'
-                    }`}>
+                    <p className="text-[13px] font-medium text-white">
                       {session.user?.email?.split('@')[0]}
                     </p>
-                    <p className={`text-xs ${
-                      isScrolled ? 'text-gray-500' : 'text-white/75'
-                    }`}>
+                    <p className="text-[11px] text-[var(--color-text-secondary)]">
                       {(session.user as any)?.isAdmin ? 'Administrador' : 'Estudiante'}
                     </p>
                   </div>
                 </div>
                 
-                {/* Sign Out Button */}
                 <button 
                   onClick={handleSignOut}
-                  className="bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                  className="text-[13px] px-4 py-2 border border-[var(--color-error)] text-[var(--color-error)] bg-transparent rounded-[4px] hover:bg-[var(--color-error-bg)] transition-colors"
                 >
-                  <span className="mr-2">🚪</span>
                   Salir
                 </button>
               </div>
             ) : (
-              <div className="flex items-center space-x-2">
+              <div className="flex items-center gap-2">
                 <Link 
                   href="/login" 
-                  className="bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                  className="text-[13px] px-4 py-2 border border-[var(--color-accent)] text-[var(--color-accent)] bg-transparent rounded-[4px] hover:bg-[rgba(61,255,160,0.08)] transition-colors"
                 >
-                  <span className="mr-2">🔑</span>
                   Iniciar sesión
                 </Link>
                 <Link 
                   href="/register" 
-                  className="bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white px-4 py-2 rounded-lg font-medium transition-all duration-200 hover:scale-105 hover:shadow-lg"
+                  className="text-[13px] px-4 py-2 bg-[var(--color-accent)] text-[var(--color-bg)] rounded-[4px] hover:opacity-88 transition-opacity font-medium"
                 >
-                  <span className="mr-2">✨</span>
                   Registrarse
                 </Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className={`md:hidden p-2 rounded-lg transition-colors duration-200 ${
-              isScrolled 
-                ? 'text-gray-700 hover:bg-gray-100' 
-                : 'text-white hover:bg-white/20'
-            }`}
+            className="md:hidden p-2 text-[var(--color-text-secondary)] hover:text-white transition-colors"
           >
             <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               {isMobileMenuOpen ? (
@@ -162,60 +118,52 @@ export default function Navbar() {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         {isMobileMenuOpen && (
-          <div className="md:hidden absolute top-16 left-0 right-0 bg-white shadow-lg border-t border-gray-200 animate-in slide-in-from-top-2 duration-200">
+          <div className="md:hidden absolute top-[52px] left-0 right-0 bg-[var(--color-bg)] border-b border-[var(--color-border)]">
             <div className="px-4 py-6 space-y-4">
               
-              {/* Mobile Navigation Links */}
               <Link 
                 href="/exercises" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors duration-200"
+                className="flex items-center gap-3 p-3 text-[13px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] rounded-lg transition-colors"
               >
-                <span className="text-xl">📚</span>
-                <span className="font-medium">Ejercicios</span>
+                Ejercicios
               </Link>
               
               {(session?.user as any)?.isAdmin && (
                 <Link 
                   href="/admin" 
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="flex items-center gap-3 p-3 rounded-lg text-gray-700 hover:bg-purple-50 hover:text-purple-700 transition-colors duration-200"
+                  className="flex items-center gap-3 p-3 text-[13px] text-[var(--color-text-secondary)] hover:bg-[var(--color-surface)] rounded-lg transition-colors"
                 >
-                  <span className="text-xl">⚙️</span>
-                  <span className="font-medium">Admin</span>
+                  Admin
                 </Link>
               )}
 
-              {/* Mobile User Section */}
-              <div className="border-t border-gray-200 pt-4 mt-4">
+              <div className="border-t border-[var(--color-border)] pt-4 mt-4">
                 {status === 'loading' ? (
                   <div className="flex items-center justify-center gap-2 p-3">
-                    <div className="animate-spin h-5 w-5 border-2 border-blue-500 border-t-transparent rounded-full"></div>
-                    <span className="text-gray-600">Cargando...</span>
+                    <div className="animate-spin h-5 w-5 border-2 border-[var(--color-accent)] border-t-transparent rounded-full"></div>
+                    <span className="text-[var(--color-text-secondary)]">Cargando...</span>
                   </div>
                 ) : session ? (
                   <div className="space-y-3">
-                    {/* Mobile User Info */}
-                    <div className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg">
-                      <div className="w-10 h-10 bg-gradient-to-br from-blue-500 to-purple-500 rounded-full flex items-center justify-center text-white font-bold">
+                    <div className="flex items-center gap-3 p-3 bg-[var(--color-surface)] rounded-lg">
+                      <div className="w-10 h-10 bg-[var(--color-accent)] rounded-full flex items-center justify-center text-[var(--color-bg)] font-bold text-[14px]">
                         {session.user?.email?.charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <p className="text-gray-800 font-medium">{session.user?.email?.split('@')[0]}</p>
-                        <p className="text-gray-500 text-sm">
+                        <p className="text-white font-medium text-[13px]">{session.user?.email?.split('@')[0]}</p>
+                        <p className="text-[var(--color-text-secondary)] text-[11px]">
                           {(session.user as any)?.isAdmin ? 'Administrador' : 'Estudiante'}
                         </p>
                       </div>
                     </div>
                     
-                    {/* Mobile Sign Out Button */}
                     <button 
                       onClick={handleSignOut}
-                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-red-500 to-pink-500 hover:from-red-600 hover:to-pink-600 text-white p-3 rounded-lg font-medium transition-all duration-200"
+                      className="w-full flex items-center justify-center gap-2 border border-[var(--color-error)] text-[var(--color-error)] bg-transparent p-3 rounded-lg text-[13px] hover:bg-[var(--color-error-bg)] transition-colors"
                     >
-                      <span>🚪</span>
                       Cerrar sesión
                     </button>
                   </div>
@@ -224,17 +172,15 @@ export default function Navbar() {
                     <Link 
                       href="/login" 
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white p-3 rounded-lg font-medium transition-all duration-200"
+                      className="w-full flex items-center justify-center gap-2 border border-[var(--color-accent)] text-[var(--color-accent)] bg-transparent p-3 rounded-lg text-[13px] hover:bg-[rgba(61,255,160,0.08)] transition-colors"
                     >
-                      <span>🔑</span>
                       Iniciar sesión
                     </Link>
                     <Link 
                       href="/register" 
                       onClick={() => setIsMobileMenuOpen(false)}
-                      className="w-full flex items-center justify-center gap-2 bg-gradient-to-r from-green-500 to-emerald-500 hover:from-green-600 hover:to-emerald-600 text-white p-3 rounded-lg font-medium transition-all duration-200"
+                      className="w-full flex items-center justify-center gap-2 bg-[var(--color-accent)] text-[var(--color-bg)] p-3 rounded-lg text-[13px] font-medium hover:opacity-88 transition-opacity"
                     >
-                      <span>✨</span>
                       Registrarse
                     </Link>
                   </div>
