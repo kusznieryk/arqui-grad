@@ -7,34 +7,34 @@ import Link from 'next/link';
 function getScoreStyle(score: number) {
   if (score < 20) {
     return {
-      bgColor: 'bg-red-100 border-red-300',
-      textColor: 'text-red-800',
-      badgeColor: 'bg-red-500',
-      icon: '❌',
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-error)]',
+      badgeColor: 'bg-[var(--color-error)]',
+      icon: null,
       label: 'Necesita Mejoras'
     };
   } else if (score < 50) {
     return {
-      bgColor: 'bg-orange-100 border-orange-300',
-      textColor: 'text-orange-800',
-      badgeColor: 'bg-orange-500',
-      icon: '⚠️',
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-text-primary)]',
+      badgeColor: 'bg-[var(--color-error)]',
+      icon: null,
       label: 'Regular'
     };
   } else if (score < 70) {
     return {
-      bgColor: 'bg-yellow-100 border-yellow-300',
-      textColor: 'text-yellow-800',
-      badgeColor: 'bg-yellow-500',
-      icon: '⚡',
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-text-primary)]',
+      badgeColor: 'bg-[var(--color-accent)]',
+      icon: null,
       label: 'Bien'
     };
   } else {
     return {
-      bgColor: 'bg-green-100 border-green-300',
-      textColor: 'text-green-800',
-      badgeColor: 'bg-green-500',
-      icon: '✅',
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-success)]',
+      badgeColor: 'bg-[var(--color-success)]',
+      icon: null,
       label: 'Excelente'
     };
   }
@@ -91,43 +91,45 @@ export default function SubmitForm({ exerciseId }: { exerciseId: string }) {
   return (
     <div className="max-w-4xl mx-auto space-y-6 p-4">
       {/* Header */}
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-6 text-white">
-        <h2 className="text-2xl font-bold flex items-center gap-2">
-          <span>💻</span> Envía tu Solución
+      <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
+        <h2 className="text-2xl font-bold flex items-center gap-2 text-[var(--color-text-primary)]">
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
+          </svg>
+          Envía tu Solución
         </h2>
-        <p className="mt-2 opacity-90">Escribe tu código Assembly y obtén retroalimentación instantánea</p>
+        <p className="mt-2 text-[var(--color-text-secondary)]">Escribe tu código Assembly y obtén retroalimentación instantánea</p>
       </div>
 
-      {/* Login Required Message */}
       {status === 'loading' && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-6 text-center">
-          <div className="animate-spin h-8 w-8 border-2 border-blue-500 border-t-transparent rounded-full mx-auto mb-4"></div>
-          <p className="text-blue-700 font-medium">Verificando sesión...</p>
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6 text-center">
+          <div className="animate-spin h-8 w-8 border-2 border-[var(--color-accent)] border-t-transparent rounded-full mx-auto mb-4"></div>
+          <p className="text-[var(--color-text-primary)] font-medium">Verificando sesión...</p>
         </div>
       )}
 
       {status === 'unauthenticated' && (
-        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
           <div className="flex items-center mb-4">
-            <span className="text-3xl mr-3">🔐</span>
+            <svg className="w-8 h-8 mr-3 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+            </svg>
             <div>
-              <h3 className="text-yellow-800 font-bold text-lg">Inicia Sesión Requerido</h3>
-              <p className="text-yellow-700">Debes crear una cuenta o iniciar sesión para enviar tu solución y obtener retroalimentación.</p>
+              <h3 className="text-[var(--color-text-primary)] font-bold text-lg">Inicia Sesión Requerido</h3>
+              <p className="text-[var(--color-text-secondary)]">Debes crear una cuenta o iniciar sesión para enviar tu solución y obtener retroalimentación.</p>
             </div>
           </div>
           <div className="flex flex-col sm:flex-row gap-3">
             <Link 
               href="/login" 
-              className="bg-blue-600 hover:bg-blue-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+              className="bg-[var(--color-accent)] text-[var(--color-bg)] px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2"
             >
-              <span>🚀</span>
               Iniciar Sesión
             </Link>
             <Link 
               href="/register" 
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors flex items-center justify-center gap-2"
+              className="bg-[var(--color-accent)] text-[var(--color-bg)] px-6 py-3 rounded-lg font-medium hover:opacity-90 transition-all flex items-center justify-center gap-2"
             >
-              <span>✨</span>
               Crear Cuenta
             </Link>
           </div>
@@ -136,17 +138,15 @@ export default function SubmitForm({ exerciseId }: { exerciseId: string }) {
 
       {/* Submit Form - Only show if authenticated */}
       {session && (
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
         <form className="space-y-4" onSubmit={onSubmit}>
           <div>
-            <label htmlFor="code" className="block text-sm font-semibold text-gray-700 mb-2">
-              📝 Tu código Assembly:
+            <label htmlFor="code" className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+              Tu código Assembly:
             </label>
             <textarea 
               id="code"
-              className="w-full border-2 border-gray-300 rounded-lg p-4 font-mono text-sm bg-white text-gray-900 placeholder-gray-500
-                         focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all
-                         hover:border-gray-400 resize-vertical min-h-[200px]" 
+              className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all duration-200 font-mono text-sm resize-vertical min-h-[200px]" 
               rows={12} 
               placeholder="Escribe o pega tu código ASM aquí...
 
@@ -160,33 +160,36 @@ INT 0"
               onChange={e => setCode(e.target.value)}
               disabled={!session}
             />
-            <div className="flex justify-between items-center mt-2 text-sm text-gray-500">
+            <div className="flex justify-between items-center mt-2 text-sm text-[var(--color-text-tertiary)]">
               <span>Caracteres: {code.length}</span>
               <span>Líneas: {code.split('\n').length}</span>
             </div>
           </div>
           
           <button 
-            className={`w-full py-3 px-6 rounded-lg font-semibold text-white transition-all transform hover:scale-[1.02] ${
+            className={`w-full py-3 px-6 rounded-lg font-semibold transition-all ${
               loading || !session
-                ? 'bg-gray-400 cursor-not-allowed' 
-                : 'bg-gradient-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 shadow-lg hover:shadow-xl'
+                ? 'bg-[var(--color-accent)]/50 cursor-not-allowed opacity-50' 
+                : 'bg-[var(--color-accent)] text-[var(--color-bg)] hover:opacity-90'
             }`}
             type="submit" 
             disabled={loading || !code.trim() || !session}
           >
             {loading ? (
               <span className="flex items-center justify-center gap-2">
-                <div className="animate-spin h-5 w-5 border-2 border-white border-t-transparent rounded-full"></div>
+                <div className="animate-spin h-5 w-5 border-2 border-[var(--color-bg)] border-t-transparent rounded-full"></div>
                 Evaluando tu código...
               </span>
             ) : !session ? (
               <span className="flex items-center justify-center gap-2">
-                <span>🔐</span> Inicia Sesión para Enviar
+                <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                </svg>
+                Inicia Sesión para Enviar
               </span>
             ) : (
               <span className="flex items-center justify-center gap-2">
-                <span>🚀</span> Enviar Solución
+                Enviar Solución
               </span>
             )}
           </button>
@@ -196,12 +199,11 @@ INT 0"
 
       {/* Error Message */}
       {error && (
-        <div className="bg-red-50 border-l-4 border-red-500 p-4 rounded-lg">
+        <div className="bg-[var(--color-error-bg)] border border-[var(--color-error)] rounded-lg p-4">
           <div className="flex items-center">
-            <span className="text-2xl mr-2">⚠️</span>
             <div>
-              <h3 className="text-red-800 font-semibold">Error</h3>
-              <p className="text-red-700">{error}</p>
+              <h3 className="text-[var(--color-error)] font-semibold">Error</h3>
+              <p className="text-[var(--color-error)]">{error}</p>
             </div>
           </div>
         </div>
@@ -209,11 +211,10 @@ INT 0"
 
       {/* Results */}
       {result && scoreStyle && (
-        <div className={`${scoreStyle.bgColor} border-2 ${scoreStyle.bgColor.replace('bg-', 'border-')} rounded-lg p-6 shadow-lg`}>
+        <div className={`${scoreStyle.bgColor} border border-[var(--color-border)] rounded-lg p-6`}>
           {/* Score Header */}
           <div className="flex items-center justify-between mb-6">
             <div className="flex items-center gap-3">
-              <span className="text-3xl">{scoreStyle.icon}</span>
               <div>
                 <h3 className={`text-2xl font-bold ${scoreStyle.textColor}`}>
                   {result.es_correcto ? 'Solución Correcta' : 'Solución Incorrecta'}
@@ -221,7 +222,7 @@ INT 0"
                 <p className={`${scoreStyle.textColor} opacity-75`}>{scoreStyle.label}</p>
               </div>
             </div>
-            <div className={`${scoreStyle.badgeColor} text-white px-6 py-3 rounded-full shadow-lg`}>
+            <div className={`${scoreStyle.badgeColor} text-[var(--color-bg)] px-6 py-3 rounded-full`}>
               <span className="text-2xl font-bold">{result.puntaje}</span>
               <span className="text-sm opacity-75">/100</span>
             </div>
@@ -233,9 +234,9 @@ INT 0"
               <span className={scoreStyle.textColor}>Progreso</span>
               <span className={scoreStyle.textColor}>{result.puntaje}%</span>
             </div>
-            <div className="w-full bg-white bg-opacity-50 rounded-full h-4 shadow-inner">
+            <div className="w-full bg-[var(--color-bg)] rounded-full h-4">
               <div 
-                className={`h-4 ${scoreStyle.badgeColor} rounded-full transition-all duration-1000 ease-out shadow-sm`}
+                className={`h-4 ${scoreStyle.badgeColor} rounded-full transition-all duration-1000 ease-out`}
                 style={{ width: `${result.puntaje}%` }}
               ></div>
             </div>
@@ -244,14 +245,14 @@ INT 0"
           <div className="grid md:grid-cols-2 gap-6">
             {/* Errors */}
             {result.errores && result.errores.length > 0 && (
-              <div className="bg-white bg-opacity-60 rounded-lg p-4 border border-red-200">
-                <h4 className="font-bold text-red-800 mb-3 flex items-center gap-2">
-                  <span>🔍</span> Errores Detectados ({result.errores.length})
+              <div className="bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+                <h4 className="font-bold text-[var(--color-error)] mb-3 flex items-center gap-2">
+                  Errores Detectados ({result.errores.length})
                 </h4>
                 <ul className="space-y-2">
                   {result.errores.map((error: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2 text-red-700 text-sm">
-                      <span className="text-red-500 mt-1">•</span>
+                    <li key={i} className="flex items-start gap-2 text-[var(--color-text-secondary)] text-sm">
+                      <span className="text-[var(--color-error)] mt-1">•</span>
                       <span>{error}</span>
                     </li>
                   ))}
@@ -261,14 +262,14 @@ INT 0"
 
             {/* Suggestions */}
             {result.sugerencias && result.sugerencias.length > 0 && (
-              <div className="bg-white bg-opacity-60 rounded-lg p-4 border border-blue-200">
-                <h4 className="font-bold text-blue-800 mb-3 flex items-center gap-2">
-                  <span>💡</span> Sugerencias ({result.sugerencias.length})
+              <div className="bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+                <h4 className="font-bold text-[var(--color-accent)] mb-3 flex items-center gap-2">
+                  Sugerencias ({result.sugerencias.length})
                 </h4>
                 <ul className="space-y-2">
                   {result.sugerencias.map((suggestion: string, i: number) => (
-                    <li key={i} className="flex items-start gap-2 text-blue-700 text-sm">
-                      <span className="text-blue-500 mt-1">•</span>
+                    <li key={i} className="flex items-start gap-2 text-[var(--color-text-secondary)] text-sm">
+                      <span className="text-[var(--color-accent)] mt-1">•</span>
                       <span>{suggestion}</span>
                     </li>
                   ))}
@@ -279,11 +280,11 @@ INT 0"
 
           {/* Observations */}
           {result.observaciones && (
-            <div className="mt-6 bg-white bg-opacity-60 rounded-lg p-4 border border-gray-200">
-              <h4 className="font-bold text-gray-800 mb-3 flex items-center gap-2">
-                <span>📋</span> Observaciones del Evaluador
+            <div className="mt-6 bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+              <h4 className="font-bold text-[var(--color-text-primary)] mb-3 flex items-center gap-2">
+                Observaciones del Evaluador
               </h4>
-              <p className="text-gray-700 leading-relaxed">{result.observaciones}</p>
+              <p className="text-[var(--color-text-secondary)] leading-relaxed">{result.observaciones}</p>
             </div>
           )}
 
@@ -291,13 +292,13 @@ INT 0"
           <div className="mt-6 flex flex-wrap gap-3 justify-center">
             <button 
               onClick={() => {setResult(null); setCode('');}} 
-              className="px-4 py-2 bg-white bg-opacity-80 hover:bg-opacity-100 text-gray-700 rounded-lg font-medium transition-all border border-gray-300 hover:border-gray-400"
+              className="px-4 py-2 bg-[var(--color-surface)] hover:opacity-90 text-[var(--color-text-primary)] rounded-lg font-medium transition-all border border-[var(--color-border)]"
             >
-              🔄 Intentar de Nuevo
+              Intentar de Nuevo
             </button>
             {result.puntaje >= 70 && (
-              <button className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-medium transition-all">
-                🎉 ¡Bien Hecho!
+              <button className="px-4 py-2 bg-[var(--color-accent)] hover:opacity-90 text-[var(--color-bg)] rounded-lg font-medium transition-all">
+                ¡Bien Hecho!
               </button>
             )}
           </div>

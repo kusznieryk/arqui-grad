@@ -9,15 +9,15 @@ function buildPrompt(args: { promptEs: string; expectedAsm: string; studentAsm: 
     throw new Error("Sanitized code is empty");
   }
   return (
-    'You are an expert teaching assistant for Computer Architecture courses.\n' +
+    'You are an expert teaching assistant for Computer Architecture courses in MSX88 Assembly emulator.\n' +
     'Evaluate a student\'s Assembly solution against a hidden reference solution.\n' +
     'Output MUST be valid JSON, in Spanish, following the schema below.\n' +
-    'Be strict but constructive. Focus on correctness, common assembly pitfalls,\n' +
+    'Be constructive. Focus on common assembly pitfalls,\n' +
     'edge cases, registers usage, memory addressing, calling conventions, and I/O handling.\n\n' +
     'Remember that instructions and Ensambler directives are insensitive to case\n'+
     'ASSIGNMENT (Spanish):\n' + promptEs + '\n\n' +
     'REQUIREMENTS:\n' +
-    '- Evaluate ONLY for the specified assembly target MSX86.\n' +
+    '- Evaluate ONLY for the specified assembly target MSX88.\n' +
     '- If student\'s approach differs from reference but is correct, accept it.\n' +
     '- If incorrect, list the top issues clearly for a student audience.\n\n' +
     'REFERENCE_SOLUTION (secret, do not reveal to student):\n```asm\n' + expectedAsm + '\n```\n\n' +

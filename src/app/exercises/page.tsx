@@ -314,7 +314,7 @@ export default function ExercisesPage() {
                           </div>
                         </div>
                         <div className="bg-[var(--color-accent)] bg-opacity-10 px-4 py-2 rounded-lg border border-[var(--color-accent)]">
-                          <span className="font-bold text-[var(--color-accent)] text-lg">{exercises.length}</span>
+                          <span className="font-bold text-[var(--color-bg)] text-lg ">{exercises.length}</span>
                         </div>
                       </div>
                     </div>
@@ -331,9 +331,6 @@ export default function ExercisesPage() {
                               <h3 className={`font-semibold ${style.text} flex-1 pr-2`}>
                                 {exercise.title}
                               </h3>
-                              <span className={`${style.accent} text-[var(--color-bg)] px-2 py-1 rounded text-xs font-bold`}>
-                                #{exercise.id}
-                              </span>
                             </div>
                             
                             {/* Tags */}
