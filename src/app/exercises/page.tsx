@@ -25,36 +25,32 @@ function getAllTags(exercises: Exercise[]): string[] {
 function getPracticaStyle(practicaNumber: number) {
   const styles = {
     1: {
-      gradient: 'from-blue-500 to-cyan-500',
-      bg: 'bg-blue-50',
-      border: 'border-blue-200',
-      text: 'text-blue-800',
-      accent: 'bg-blue-500',
-      icon: '📘'
+      bg: 'bg-[var(--color-surface)]',
+      border: 'border-[var(--color-border)]',
+      text: 'text-[var(--color-text-primary)]',
+      accent: 'bg-[var(--color-accent)]',
+      badge: 'P1'
     },
     2: {
-      gradient: 'from-green-500 to-emerald-500',
-      bg: 'bg-green-50',
-      border: 'border-green-200',
-      text: 'text-green-800',
-      accent: 'bg-green-500',
-      icon: '📗'
+      bg: 'bg-[var(--color-surface)]',
+      border: 'border-[var(--color-border)]',
+      text: 'text-[var(--color-text-primary)]',
+      accent: 'bg-[var(--color-accent)]',
+      badge: 'P2'
     },
     3: {
-      gradient: 'from-purple-500 to-pink-500',
-      bg: 'bg-purple-50',
-      border: 'border-purple-200',
-      text: 'text-purple-800',
-      accent: 'bg-purple-500',
-      icon: '📕'
+      bg: 'bg-[var(--color-surface)]',
+      border: 'border-[var(--color-border)]',
+      text: 'text-[var(--color-text-primary)]',
+      accent: 'bg-[var(--color-accent)]',
+      badge: 'P3'
     },
     default: {
-      gradient: 'from-gray-500 to-slate-500',
-      bg: 'bg-gray-50',
-      border: 'border-gray-200',
-      text: 'text-gray-800',
-      accent: 'bg-gray-500',
-      icon: '📚'
+      bg: 'bg-[var(--color-surface)]',
+      border: 'border-[var(--color-border)]',
+      text: 'text-[var(--color-text-primary)]',
+      accent: 'bg-[var(--color-accent)]',
+      badge: `P${practicaNumber}`
     }
   };
   return styles[practicaNumber as keyof typeof styles] || styles.default;
@@ -74,7 +70,6 @@ export default function ExercisesPage() {
         const data = await res.json();
         setItems(data);
       } catch (error) {
-        console.error('Error fetching exercises:', error);
       } finally {
         setLoading(false);
       }
@@ -116,70 +111,78 @@ export default function ExercisesPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex items-center justify-center">
-        <div className="text-center bg-white p-8 rounded-lg shadow-lg">
-          <div className="animate-spin rounded-full h-16 w-16 border-4 border-blue-500 border-t-transparent mx-auto mb-4"></div>
-          <h2 className="text-xl font-semibold text-gray-800">Cargando ejercicios...</h2>
-          <p className="text-gray-600">Preparando tu experiencia de aprendizaje</p>
+      <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center">
+        <div className="text-center bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-8">
+          <div className="animate-spin rounded-full h-16 w-16 border-4 border-[var(--color-accent)] border-t-transparent mx-auto mb-4"></div>
+          <h2 className="text-xl font-semibold text-[var(--color-text-primary)]">Cargando ejercicios...</h2>
+          <p className="text-[var(--color-text-secondary)]">Preparando tu experiencia de aprendizaje</p>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="max-w-7xl mx-auto p-4 space-y-8">
         
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 p-8 text-white">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden">
+          <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] p-8">
             <div className="flex items-center gap-4 mb-4">
-              <span className="text-5xl">🎓</span>
+              <div className="w-12 h-12 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-bg)] fill-none stroke-2">
+                  <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                </svg>
+              </div>
               <div>
-                <h1 className="text-4xl font-bold">Ejercicios de Assembly</h1>
-                <p className="text-xl opacity-90">Arquitectura de Computadores - Colección Completa</p>
+                <h1 className="text-4xl font-bold text-[var(--color-text-primary)]">Ejercicios de Assembly</h1>
+                <p className="text-xl text-[var(--color-text-secondary)]">Arquitectura de Computadores - Colección Completa</p>
               </div>
             </div>
             
             {/* Stats */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-6">
-              <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center backdrop-blur-sm border border-white border-opacity-30">
-                <div className="text-2xl font-bold text-indigo-700">{items.length}</div>
-                <div className="text-sm text-indigo-600 font-medium">Total Ejercicios</div>
+              <div className="bg-[var(--color-bg)] rounded-lg p-3 text-center border border-[var(--color-border)]">
+                <div className="text-2xl font-bold text-[var(--color-accent)]">{items.length}</div>
+                <div className="text-sm text-[var(--color-text-secondary)] font-medium">Total Ejercicios</div>
               </div>
-              <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center backdrop-blur-sm border border-white border-opacity-30">
-                <div className="text-2xl font-bold text-purple-700">{practicaNumbers.length}</div>
-                <div className="text-sm text-purple-600 font-medium">Prácticas</div>
+              <div className="bg-[var(--color-bg)] rounded-lg p-3 text-center border border-[var(--color-border)]">
+                <div className="text-2xl font-bold text-[var(--color-accent)]">{practicaNumbers.length}</div>
+                <div className="text-sm text-[var(--color-text-secondary)] font-medium">Prácticas</div>
               </div>
-              <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center backdrop-blur-sm border border-white border-opacity-30">
-                <div className="text-2xl font-bold text-pink-700">{allTags.length}</div>
-                <div className="text-sm text-pink-600 font-medium">Temas</div>
+              <div className="bg-[var(--color-bg)] rounded-lg p-3 text-center border border-[var(--color-border)]">
+                <div className="text-2xl font-bold text-[var(--color-accent)]">{allTags.length}</div>
+                <div className="text-sm text-[var(--color-text-secondary)] font-medium">Temas</div>
               </div>
-              <div className="bg-white bg-opacity-90 rounded-lg p-3 text-center backdrop-blur-sm border border-white border-opacity-30">
-                <div className="text-2xl font-bold text-indigo-700">{filteredItems.length}</div>
-                <div className="text-sm text-indigo-600 font-medium">Filtrados</div>
+              <div className="bg-[var(--color-bg)] rounded-lg p-3 text-center border border-[var(--color-border)]">
+                <div className="text-2xl font-bold text-[var(--color-accent)]">{filteredItems.length}</div>
+                <div className="text-sm text-[var(--color-text-secondary)] font-medium">Filtrados</div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Search and Filter Section */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
           <div className="flex items-center gap-2 mb-6">
-            <span className="text-2xl">🔍</span>
-            <h2 className="text-xl font-bold text-gray-800">Buscar y Filtrar</h2>
+            <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-text-primary)] fill-none stroke-2">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Buscar y Filtrar</h2>
           </div>
 
           <div className="grid md:grid-cols-3 gap-4 mb-6">
             {/* Search Input */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📝 Buscar por título
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                Buscar por título
               </label>
               <input
                 type="text"
                 placeholder="Escribe para buscar..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:ring-1 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-all"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
@@ -187,11 +190,11 @@ export default function ExercisesPage() {
 
             {/* Tag Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                🏷️ Filtrar por tema
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                Filtrar por tema
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:ring-1 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-all"
                 value={selectedTag}
                 onChange={(e) => setSelectedTag(e.target.value)}
               >
@@ -204,11 +207,11 @@ export default function ExercisesPage() {
 
             {/* Practice Filter */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                📚 Filtrar por práctica
+              <label className="block text-sm font-medium text-[var(--color-text-primary)] mb-2">
+                Filtrar por práctica
               </label>
               <select
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
+                className="w-full px-4 py-2 border border-[var(--color-border)] rounded-lg bg-[var(--color-surface)] text-[var(--color-text-primary)] focus:ring-1 focus:ring-[var(--color-accent)] focus:border-[var(--color-accent)] transition-all"
                 value={selectedPractica || ''}
                 onChange={(e) => setSelectedPractica(e.target.value ? parseInt(e.target.value) : null)}
               >
@@ -223,37 +226,43 @@ export default function ExercisesPage() {
           {/* Active Filters */}
           {(selectedTag || searchQuery || selectedPractica) && (
             <div className="flex flex-wrap gap-2">
-              <span className="text-sm text-gray-800 font-medium">Filtros activos:</span>
+              <span className="text-sm text-[var(--color-text-secondary)] font-medium">Filtros activos:</span>
               {searchQuery && (
-                <span className="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm font-medium">
-                  🔍 "{searchQuery}"
+                <span className="bg-[var(--color-surface)] text-[var(--color-text-primary)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)] flex items-center gap-2">
+                  <span>"{searchQuery}"</span>
                   <button 
                     onClick={() => setSearchQuery('')}
-                    className="ml-2 text-blue-600 hover:text-blue-800"
+                    className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                   >
-                    ×
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-2">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
                   </button>
                 </span>
               )}
               {selectedTag && (
-                <span className="bg-green-100 text-green-800 px-3 py-1 rounded-full text-sm font-medium">
-                  🏷️ {selectedTag}
+                <span className="bg-[var(--color-surface)] text-[var(--color-text-primary)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)] flex items-center gap-2">
+                  <span>{selectedTag}</span>
                   <button 
                     onClick={() => setSelectedTag('')}
-                    className="ml-2 text-green-600 hover:text-green-800"
+                    className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                   >
-                    ×
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-2">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
                   </button>
                 </span>
               )}
               {selectedPractica && (
-                <span className="bg-purple-100 text-purple-800 px-3 py-1 rounded-full text-sm font-medium">
-                  📚 Práctica {selectedPractica}
+                <span className="bg-[var(--color-surface)] text-[var(--color-text-primary)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)] flex items-center gap-2">
+                  <span>Práctica {selectedPractica}</span>
                   <button 
                     onClick={() => setSelectedPractica(null)}
-                    className="ml-2 text-purple-600 hover:text-purple-800"
+                    className="text-[var(--color-text-secondary)] hover:text-[var(--color-text-primary)] transition-colors"
                   >
-                    ×
+                    <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-2">
+                      <path d="M18 6L6 18M6 6l12 12" />
+                    </svg>
                   </button>
                 </span>
               )}
@@ -263,7 +272,7 @@ export default function ExercisesPage() {
                   setSelectedTag('');
                   setSelectedPractica(null);
                 }}
-                className="bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm font-medium hover:bg-gray-300 transition-all border border-gray-300"
+                className="bg-[var(--color-surface)] text-[var(--color-text-primary)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)] hover:bg-[var(--color-background-secondary)] transition-all"
               >
                 Limpiar todo
               </button>
@@ -273,10 +282,13 @@ export default function ExercisesPage() {
 
         {/* Exercises by Practica */}
         {Object.keys(exercisesByPractica).length === 0 ? (
-          <div className="bg-white rounded-lg shadow-lg p-8 text-center">
-            <span className="text-6xl mb-4 block">🔍</span>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">No se encontraron ejercicios</h3>
-            <p className="text-gray-600">Intenta ajustar tus filtros de búsqueda.</p>
+          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-8 text-center">
+            <svg viewBox="0 0 24 24" className="w-16 h-16 stroke-[var(--color-text-tertiary)] fill-none stroke-2 mx-auto mb-4">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" />
+            </svg>
+            <h3 className="text-xl font-bold text-[var(--color-text-primary)] mb-2">No se encontraron ejercicios</h3>
+            <p className="text-[var(--color-text-secondary)]">Intenta ajustar tus filtros de búsqueda.</p>
           </div>
         ) : (
           <div className="space-y-8">
@@ -288,19 +300,21 @@ export default function ExercisesPage() {
                 const exercises = exercisesByPractica[practicaNum];
                 
                 return (
-                  <div key={practicaNum} className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
+                  <div key={practicaNum} className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden">
                     {/* Practice Header */}
-                    <div className={`bg-gradient-to-r ${style.gradient} p-6 text-white`}>
+                    <div className="bg-[var(--color-bg)] border-b border-[var(--color-border)] p-6">
                       <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                          <span className="text-3xl">{style.icon}</span>
+                          <div className="w-10 h-10 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                            <span className="text-[var(--color-bg)] font-bold text-sm">{style.badge}</span>
+                          </div>
                           <div>
-                            <h2 className="text-2xl font-bold">Práctica {practicaNum}</h2>
-                            <p className="opacity-90">{exercises.length} ejercicio{exercises.length !== 1 ? 's' : ''} disponible{exercises.length !== 1 ? 's' : ''}</p>
+                            <h2 className="text-2xl font-bold text-[var(--color-text-primary)]">Práctica {practicaNum}</h2>
+                            <p className="text-[var(--color-text-secondary)]">{exercises.length} ejercicio{exercises.length !== 1 ? 's' : ''} disponible{exercises.length !== 1 ? 's' : ''}</p>
                           </div>
                         </div>
-                        <div className={`${style.accent} bg-opacity-20 px-4 py-2 rounded-full backdrop-blur-sm`}>
-                          <span className="font-bold text-lg">{exercises.length}</span>
+                        <div className="bg-[var(--color-accent)] bg-opacity-10 px-4 py-2 rounded-lg border border-[var(--color-accent)]">
+                          <span className="font-bold text-[var(--color-accent)] text-lg">{exercises.length}</span>
                         </div>
                       </div>
                     </div>
@@ -311,13 +325,13 @@ export default function ExercisesPage() {
                         {exercises.map((exercise) => (
                           <div 
                             key={exercise.id}
-                            className={`${style.bg} ${style.border} border rounded-lg p-4 hover:shadow-md transition-all duration-200 hover:scale-[1.02]`}
+                            className={`${style.bg} ${style.border} border rounded-lg p-4 hover:border-[var(--color-accent)] transition-all duration-200 hover:scale-[1.02]`}
                           >
                             <div className="flex items-start justify-between mb-3">
                               <h3 className={`font-semibold ${style.text} flex-1 pr-2`}>
                                 {exercise.title}
                               </h3>
-                              <span className={`${style.accent} text-white px-2 py-1 rounded-full text-xs font-bold`}>
+                              <span className={`${style.accent} text-[var(--color-bg)] px-2 py-1 rounded text-xs font-bold`}>
                                 #{exercise.id}
                               </span>
                             </div>
@@ -328,13 +342,13 @@ export default function ExercisesPage() {
                                 {exercise.tags.slice(0, 3).map((tag, index) => (
                                   <span 
                                     key={index}
-                                    className="bg-white shadow-sm text-gray-800 px-2 py-1 rounded text-xs font-medium border border-gray-200"
+                                    className="bg-[var(--color-bg)] text-[var(--color-text-secondary)] px-2 py-1 rounded text-xs font-medium border border-[var(--color-border)]"
                                   >
                                     {tag}
                                   </span>
                                 ))}
                                 {exercise.tags.length > 3 && (
-                                  <span className="bg-white shadow-sm text-gray-600 px-2 py-1 rounded text-xs border border-gray-200">
+                                  <span className="bg-[var(--color-bg)] text-[var(--color-text-tertiary)] px-2 py-1 rounded text-xs border border-[var(--color-border)]">
                                     +{exercise.tags.length - 3}
                                   </span>
                                 )}
@@ -343,10 +357,12 @@ export default function ExercisesPage() {
 
                             <Link 
                               href={`/exercises/${exercise.id}`}
-                              className={`inline-flex items-center gap-2 ${style.accent} text-white px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-all w-full justify-center`}
+                              className={`inline-flex items-center justify-center gap-2 ${style.accent} text-[var(--color-bg)] px-4 py-2 rounded-lg font-medium hover:opacity-90 transition-all w-full`}
                             >
-                              <span>🚀</span>
-                              Resolver Ejercicio
+                              <span>Resolver Ejercicio</span>
+                              <svg viewBox="0 0 24 24" className="w-4 h-4 stroke-current fill-none stroke-2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                              </svg>
                             </Link>
                           </div>
                         ))}
@@ -359,27 +375,44 @@ export default function ExercisesPage() {
         )}
 
         {/* Quick Start Tips */}
-        <div className="bg-gradient-to-r from-yellow-50 to-orange-50 border border-yellow-200 rounded-lg p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">💡</span>
-            <h2 className="text-xl font-bold text-yellow-800">Consejos para Empezar</h2>
+            <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-accent)] fill-none stroke-2">
+              <path d="M9 18h6M10 22h4M12 2v1M12 8v6M12 18v2M4.93 4.93l.7.7M18.36 4.93l-.7.7M4.93 19.07l.7-.7M18.36 19.07l-.7-.7M2 12h1M21 12h1" />
+            </svg>
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Consejos para Empezar</h2>
           </div>
           
           <div className="grid md:grid-cols-3 gap-6">
             <div className="text-center">
-              <div className="text-3xl mb-2">🎯</div>
-              <h3 className="font-semibold text-yellow-700 mb-1">Comienza Gradual</h3>
-              <p className="text-sm text-yellow-600">Empieza con la Práctica 1 y avanza progresivamente</p>
+              <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-bg)] fill-none stroke-2">
+                  <circle cx="12" cy="12" r="10" />
+                  <path d="M12 16v-4M12 8h.01" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">Comienza Gradual</h3>
+              <p className="text-sm text-[var(--color-text-secondary)]">Empieza con la Práctica 1 y avanza progresivamente</p>
             </div>
             <div className="text-center">
-              <div className="text-3xl mb-2">🔍</div>
-              <h3 className="font-semibold text-yellow-700 mb-1">Usa los Filtros</h3>
-              <p className="text-sm text-yellow-600">Filtra por temas específicos para practicar</p>
+              <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-bg)] fill-none stroke-2">
+                  <circle cx="11" cy="11" r="8" />
+                  <path d="M21 21l-4.35-4.35" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">Usa los Filtros</h3>
+              <p className="text-sm text-[var(--color-text-secondary)]">Filtra por temas específicos para practicar</p>
             </div>
             <div className="text-center">
-              <div className="text-3xl mb-2">📚</div>
-              <h3 className="font-semibold text-yellow-700 mb-1">Lee los Tags</h3>
-              <p className="text-sm text-yellow-600">Los tags indican el tipo de problema a resolver</p>
+              <div className="w-12 h-12 mx-auto mb-2 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-bg)] fill-none stroke-2">
+                  <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
+              </div>
+              <h3 className="font-semibold text-[var(--color-text-primary)] mb-1">Leé los Tags</h3>
+              <p className="text-sm text-[var(--color-text-secondary)]">Los tags indican el tipo de problema a resolver</p>
             </div>
           </div>
         </div>
