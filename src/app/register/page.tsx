@@ -131,7 +131,7 @@ export default function RegisterPage() {
                   <input
                     id="email"
                     type="email"
-                    required
+                    autoComplete="email"
                     className={`w-full px-4 py-3 bg-[var(--color-surface)] border rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-1 focus:border-[var(--color-accent)] focus:ring-[var(--color-accent)] transition-all duration-200 ${emailError ? 'border-[var(--color-error)]' : 'border-[var(--color-border)]'}`}
                     placeholder="tu@email.com"
                     value={email}
@@ -150,7 +150,7 @@ export default function RegisterPage() {
                   <input
                     id="password"
                     type="password"
-                    required
+                    autoComplete="new-password"
                     className={`w-full px-4 py-3 bg-[var(--color-surface)] border rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-1 focus:border-[var(--color-accent)] focus:ring-[var(--color-accent)] transition-all duration-200 ${passwordErrors.length > 0 ? 'border-[var(--color-error)]' : 'border-[var(--color-border)]'}`}
                     placeholder="Mínimo 8 caracteres"
                     value={password}
@@ -184,7 +184,7 @@ export default function RegisterPage() {
                   <input
                     id="confirmPassword"
                     type="password"
-                    required
+                    autoComplete="new-password"
                     className={`w-full px-4 py-3 bg-[var(--color-surface)] border rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:outline-none focus:ring-1 focus:border-[var(--color-accent)] focus:ring-[var(--color-accent)] transition-all duration-200 ${confirmPasswordError ? 'border-[var(--color-error)]' : 'border-[var(--color-border)]'}`}
                     placeholder="Repite tu contraseña"
                     value={confirmPassword}

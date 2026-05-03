@@ -1,5 +1,6 @@
 import { prisma } from '@/lib/prisma';
 import SubmitForm from './submit-form';
+import Link from 'next/link';
 
 // Helper function to safely get a string array from JsonValue
 function getStringArrayFromJson(value: any): string[] {
@@ -36,31 +37,27 @@ function getJsonProperty(obj: any, key: string): any {
 function getScoreStyle(score: number) {
   if (score < 20) {
     return {
-      bgColor: 'bg-red-100',
-      textColor: 'text-red-800',
-      badgeColor: 'bg-red-500',
-      icon: '❌'
+      bgColor: 'bg-[var(--color-error-bg)]',
+      textColor: 'text-[var(--color-error)]',
+      badgeColor: 'bg-[var(--color-error)]'
     };
   } else if (score < 50) {
     return {
-      bgColor: 'bg-orange-100',
-      textColor: 'text-orange-800',
-      badgeColor: 'bg-orange-500',
-      icon: '⚠️'
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-text-primary)]',
+      badgeColor: 'bg-[var(--color-error)]'
     };
   } else if (score < 70) {
     return {
-      bgColor: 'bg-yellow-100',
-      textColor: 'text-yellow-800',
-      badgeColor: 'bg-yellow-500',
-      icon: '⚡'
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-text-primary)]',
+      badgeColor: 'bg-[var(--color-accent)]'
     };
   } else {
     return {
-      bgColor: 'bg-green-100',
-      textColor: 'text-green-800',
-      badgeColor: 'bg-green-500',
-      icon: '✅'
+      bgColor: 'bg-[var(--color-surface)]',
+      textColor: 'text-[var(--color-success)]',
+      badgeColor: 'bg-[var(--color-success)]'
     };
   }
 }
@@ -86,14 +83,17 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
   
   if (!ex) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-red-50 to-red-100 flex items-center justify-center p-6">
-        <div className="bg-white rounded-lg shadow-xl p-8 text-center max-w-md">
-          <span className="text-6xl mb-4 block">😕</span>
-          <h1 className="text-2xl font-bold text-gray-800 mb-2">Ejercicio No Encontrado</h1>
-          <p className="text-gray-600 mb-4">El ejercicio que buscas no existe o ha sido eliminado.</p>
-          <a href="/exercises" className="bg-blue-500 hover:bg-blue-600 text-white px-6 py-2 rounded-lg font-medium transition-all">
+      <div className="min-h-screen bg-[var(--color-bg)] flex items-center justify-center p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-8 text-center max-w-md">
+          <svg viewBox="0 0 24 24" className="w-16 h-16 stroke-[var(--color-error)] fill-none stroke-2 mx-auto mb-4">
+            <circle cx="12" cy="12" r="10" />
+            <path d="M12 8v4M12 16h.01" />
+          </svg>
+          <h1 className="text-2xl font-bold text-[var(--color-text-primary)] mb-2">Ejercicio No Encontrado</h1>
+          <p className="text-[var(--color-text-secondary)] mb-4">El ejercicio que buscas no existe o ha sido eliminado.</p>
+          <Link href="/exercises" className="inline-block bg-[var(--color-accent)] hover:opacity-90 text-[var(--color-bg)] px-6 py-2 rounded-lg font-medium transition-all">
             Volver a Ejercicios
-          </a>
+          </Link>
         </div>
       </div>
     );
@@ -111,17 +111,22 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
   console.log('Processed tags:', tags);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-[var(--color-bg)]">
       <div className="max-w-6xl mx-auto p-4 space-y-8">
         
         {/* Header Section */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 overflow-hidden">
-          <div className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 p-6 text-white">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg overflow-hidden">
+          <div className="bg-[var(--color-surface)] border-b border-[var(--color-border)] p-6">
             <div className="flex items-center gap-3 mb-2">
-              <span className="text-3xl">📚</span>
+              <div className="w-12 h-12 flex items-center justify-center bg-[var(--color-accent)] rounded-lg">
+                <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-bg)] fill-none stroke-2">
+                  <path d="M12 14l9-5-9-5-9 5 9 5z" />
+                  <path d="M12 14l6.16-3.422a12.083 12.083 0 01.665 6.479A11.952 11.952 0 0012 20.055a11.952 11.952 0 00-6.824-2.998 12.078 12.078 0 01.665-6.479L12 14z" />
+                </svg>
+              </div>
               <div>
-                <h1 className="text-3xl font-bold">{ex.title}</h1>
-                <p className="opacity-90">Ejercicio de Arquitectura de Computadores</p>
+                <h1 className="text-3xl font-bold text-[var(--color-text-primary)]">{ex.title}</h1>
+                <p className="text-[var(--color-text-secondary)]">Ejercicio de Arquitectura de Computadores</p>
               </div>
             </div>
             
@@ -131,9 +136,9 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
                 {tags.map((tag: string, index: number) => (
                   <span 
                     key={index}
-                    className="bg-white bg-opacity-20 px-3 py-1 rounded-full text-sm font-medium backdrop-blur-sm text-gray-900"
+                    className="bg-[var(--color-bg)] bg-opacity-50 px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)] text-[var(--color-text-secondary)]"
                   >
-                    🏷️ {tag}
+                    {tag}
                   </span>
                 ))}
               </div>
@@ -142,25 +147,30 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
         </div>
 
         {/* Exercise Description */}
-        <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">📋</span>
-            <h2 className="text-xl font-bold text-gray-800">Descripción del Ejercicio</h2>
+            <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-text-primary)] fill-none stroke-2">
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <path d="M14 2v6h6M16 13H8M16 17H8M10 9H8" />
+            </svg>
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Descripción del Ejercicio</h2>
           </div>
           
-          <div className="bg-gray-50 rounded-lg p-6 border-l-4 border-blue-500">
-            <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed text-gray-700 overflow-x-auto">
+          <div className="bg-[var(--color-bg)] rounded-lg p-6 border-l-4 border-[var(--color-accent)]">
+            <pre className="whitespace-pre-wrap font-mono text-sm leading-relaxed text-[var(--color-text-secondary)] overflow-x-auto">
 {ex.prompt}
             </pre>
           </div>
 
           {/* Instructions Panel */}
-          <div className="mt-6 bg-blue-50 border border-blue-200 rounded-lg p-4">
+          <div className="mt-6 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-4">
             <div className="flex items-center gap-2 mb-2">
-              <span className="text-lg">💡</span>
-              <h3 className="font-semibold text-blue-800">Instrucciones</h3>
+              <svg viewBox="0 0 24 24" className="w-5 h-5 stroke-[var(--color-accent)] fill-none stroke-2">
+                <path d="M9 18h6M10 22h4M12 2v1M12 8v6M12 18v2M4.93 4.93l.7.7M18.36 4.93l-.7.7M4.93 19.07l.7-.7M18.36 19.07l-.7-.7M2 12h1M21 12h1" />
+              </svg>
+              <h3 className="font-semibold text-[var(--color-text-primary)]">Instrucciones</h3>
             </div>
-            <ul className="text-sm text-blue-700 space-y-1 ml-6">
+            <ul className="text-sm text-[var(--color-text-secondary)] space-y-1 ml-6">
               <li>• Lee cuidadosamente el enunciado del problema</li>
               <li>• Escribe tu solución en Assembly x86</li>
               <li>• Usa comentarios para explicar tu código</li>
@@ -174,11 +184,13 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
 
         {/* Submissions History */}
         {subs.length > 0 && (
-          <div className="bg-white rounded-lg shadow-lg border border-gray-200 p-6">
+          <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
             <div className="flex items-center gap-2 mb-6">
-              <span className="text-2xl">📊</span>
-              <h2 className="text-xl font-bold text-gray-800">Historial de Envíos</h2>
-              <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-sm font-medium">
+              <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-text-primary)] fill-none stroke-2">
+                <path d="M18 20V10M12 20V4M6 20v-6" />
+              </svg>
+              <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Historial de Envíos</h2>
+              <span className="bg-[var(--color-bg)] text-[var(--color-text-secondary)] px-3 py-1 rounded-full text-sm font-medium border border-[var(--color-border)]">
                 {subs.length} envío{subs.length !== 1 ? 's' : ''}
               </span>
             </div>
@@ -189,25 +201,24 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
                 return (
                   <div 
                     key={sub.id}
-                    className={`${scoreStyle.bgColor} border border-gray-200 rounded-lg p-4 transition-all hover:shadow-md`}
+                    className={`${scoreStyle.bgColor} border border-[var(--color-border)] rounded-lg p-4 transition-all hover:border-[var(--color-accent)]`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-3">
-                        <span className="text-xl">{scoreStyle.icon}</span>
                         <div>
                           <div className="flex items-center gap-2">
-                            <span className="font-semibold text-gray-700">Envío #{subs.length - index}</span>
-                            <span className={`${scoreStyle.badgeColor} text-white px-2 py-1 rounded-full text-xs font-bold`}>
+                            <span className="font-semibold text-[var(--color-text-primary)]">Envío #{subs.length - index}</span>
+                            <span className={`${scoreStyle.badgeColor} text-[var(--color-bg)] px-2 py-1 rounded-full text-xs font-bold`}>
                               {sub.score}/100
                             </span>
                             {sub.isCorrect && (
-                              <span className="bg-green-500 text-white px-2 py-1 rounded-full text-xs font-bold">
+                              <span className="bg-[var(--color-success)] text-[var(--color-bg)] px-2 py-1 rounded-full text-xs font-bold">
                                 ✓ Correcto
                               </span>
                             )}
                           </div>
-                          <p className="text-sm text-gray-600">
-                            📅 {formatDate(sub.createdAt.toString())}
+                          <p className="text-sm text-[var(--color-text-secondary)]">
+                            {formatDate(sub.createdAt.toString())}
                           </p>
                         </div>
                       </div>
@@ -216,7 +227,7 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
                         <div className={`text-2xl font-bold ${scoreStyle.textColor}`}>
                           {sub.score}%
                         </div>
-                        <div className="w-20 bg-white bg-opacity-50 rounded-full h-2 mt-1">
+                        <div className="w-20 bg-[var(--color-bg)] rounded-full h-2 mt-1 border border-[var(--color-border)]">
                           <div 
                             className={`h-2 ${scoreStyle.badgeColor} rounded-full transition-all`}
                             style={{ width: `${sub.score}%` }}
@@ -233,19 +244,19 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
                       const hasSuggestions = Array.isArray(sugerencias) && sugerencias.length > 0;
                       
                       return (hasErrors || hasSuggestions) && (
-                        <div className="mt-3 pt-3 border-t border-white border-opacity-50">
+                        <div className="mt-3 pt-3 border-t border-[var(--color-border)]">
                           <div className="grid md:grid-cols-2 gap-4 text-sm">
                             {hasErrors && (
                               <div>
-                                <span className="font-medium text-red-700">
-                                  🔍 {errores.length} error{errores.length !== 1 ? 'es' : ''}
+                                <span className="font-medium text-[var(--color-error)]">
+                                  {errores.length} error{errores.length !== 1 ? 'es' : ''}
                                 </span>
                               </div>
                             )}
                             {hasSuggestions && (
                               <div>
-                                <span className="font-medium text-blue-700">
-                                  💡 {sugerencias.length} sugerencia{sugerencias.length !== 1 ? 's' : ''}
+                                <span className="font-medium text-[var(--color-accent)]">
+                                  {sugerencias.length} sugerencia{sugerencias.length !== 1 ? 's' : ''}
                                 </span>
                               </div>
                             )}
@@ -259,23 +270,23 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
             </div>
 
             {/* Statistics */}
-            <div className="mt-6 pt-6 border-t border-gray-200">
+            <div className="mt-6 pt-6 border-t border-[var(--color-border)]">
               <div className="grid md:grid-cols-3 gap-4 text-center">
-                <div className="bg-blue-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-blue-600">{subs.length}</div>
-                  <div className="text-sm text-blue-700">Total Envíos</div>
+                <div className="bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+                  <div className="text-2xl font-bold text-[var(--color-accent)]">{subs.length}</div>
+                  <div className="text-sm text-[var(--color-text-secondary)]">Total Envíos</div>
                 </div>
-                <div className="bg-green-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-green-600">
+                <div className="bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+                  <div className="text-2xl font-bold text-[var(--color-success)]">
                     {subs.filter(s => s.isCorrect).length}
                   </div>
-                  <div className="text-sm text-green-700">Correctos</div>
+                  <div className="text-sm text-[var(--color-text-secondary)]">Correctos</div>
                 </div>
-                <div className="bg-purple-50 rounded-lg p-4">
-                  <div className="text-2xl font-bold text-purple-600">
+                <div className="bg-[var(--color-bg)] rounded-lg p-4 border border-[var(--color-border)]">
+                  <div className="text-2xl font-bold text-[var(--color-accent)]">
                     {Math.round(subs.reduce((acc, s) => acc + s.score, 0) / subs.length) || 0}
                   </div>
-                  <div className="text-sm text-purple-700">Promedio</div>
+                  <div className="text-sm text-[var(--color-text-secondary)]">Promedio</div>
                 </div>
               </div>
             </div>
@@ -283,16 +294,19 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
         )}
 
         {/* Tips Section */}
-        <div className="bg-gradient-to-r from-green-50 to-emerald-50 border border-green-200 rounded-lg p-6">
+        <div className="bg-[var(--color-surface)] border border-[var(--color-border)] rounded-lg p-6">
           <div className="flex items-center gap-2 mb-4">
-            <span className="text-2xl">🎯</span>
-            <h2 className="text-xl font-bold text-green-800">Consejos para el Éxito</h2>
+            <svg viewBox="0 0 24 24" className="w-6 h-6 stroke-[var(--color-accent)] fill-none stroke-2">
+              <circle cx="12" cy="12" r="10" />
+              <path d="M12 16v-4M12 8h.01" />
+            </svg>
+            <h2 className="text-xl font-bold text-[var(--color-text-primary)]">Consejos para el Éxito</h2>
           </div>
           
           <div className="grid md:grid-cols-2 gap-6">
             <div>
-              <h3 className="font-semibold text-green-700 mb-2">✨ Mejores Prácticas</h3>
-              <ul className="text-sm text-green-600 space-y-1">
+              <h3 className="font-semibold text-[var(--color-text-primary)] mb-2">Mejores Prácticas</h3>
+              <ul className="text-sm text-[var(--color-text-secondary)] space-y-1">
                 <li>• Planifica tu solución antes de codificar</li>
                 <li>• Usa nombres descriptivos para las etiquetas</li>
                 <li>• Añade comentarios explicativos</li>
@@ -300,8 +314,8 @@ export default async function ExerciseDetail({ params }: { params: Promise<{ id:
               </ul>
             </div>
             <div>
-              <h3 className="font-semibold text-green-700 mb-2">🔧 Depuración</h3>
-              <ul className="text-sm text-green-600 space-y-1">
+              <h3 className="font-semibold text-[var(--color-text-primary)] mb-2">Depuración</h3>
+              <ul className="text-sm text-[var(--color-text-secondary)] space-y-1">
                 <li>• Verifica los registros utilizados</li>
                 <li>• Comprueba las direcciones de memoria</li>
                 <li>• Revisa las instrucciones de salto</li>

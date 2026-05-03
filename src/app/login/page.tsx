@@ -72,7 +72,8 @@ export default function LoginPage() {
                 </label>
                 <input 
                   id="email"
-                  type="email"
+                  type="text"
+                  autoComplete="email"
                   className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all duration-200" 
                   placeholder="tu@email.com" 
                   value={email} 
@@ -90,7 +91,8 @@ export default function LoginPage() {
                 </label>
                 <input 
                   id="password"
-                  type="password" 
+                  type="password"
+                  autoComplete="current-password"
                   className="w-full px-4 py-3 bg-[var(--color-surface)] border border-[var(--color-border)] rounded-xl text-[var(--color-text-primary)] placeholder-[var(--color-text-tertiary)] focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-all duration-200" 
                   placeholder="Tu contraseña segura" 
                   value={password} 
